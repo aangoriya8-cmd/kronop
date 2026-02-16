@@ -3,7 +3,7 @@
 // Instagram Killer: 2x Faster than YouTube Long Videos
 
 import { videosApi } from './api';
-import { videoChunkingService } from './videoChunkingService'; // Import micro-chunking
+// import { videoChunkingService } from './videoChunkingService'; // Service removed
 // import { hlsOptimizerService } from './hlsOptimizer'; // Service removed
 
 export interface LongVideo {
@@ -228,16 +228,10 @@ async function fetchVideosFromBridgeAPI(): Promise<LongVideo[]> {
           bunnyCDN: transformedVideo.bunnyCDNUrl ? '✅' : '❌'
         });
         
-        // MICRO-CHUNKING: Initialize chunking for each video
+        // MICRO-CHUNKING: Removed - using direct video URL
         if (transformedVideo.bunnyCDNUrl) {
-          // Pre-initialize micro-chunking for instant play
-          videoChunkingService.initializeStream(
-            transformedVideo.id, 
-            transformedVideo.bunnyCDNUrl, 
-            '720p'
-          ).catch(error => {
-            console.warn(`⚠️ Failed to initialize chunking for ${transformedVideo.id}:`, error);
-          });
+          // Direct video URL for instant play
+          console.log(`Video ${transformedVideo.id} ready for direct streaming`);
         }
         
         return transformedVideo;
@@ -340,15 +334,9 @@ export async function getLongVideoById(id: string): Promise<LongVideo | null> {
     const videos = await getLongVideos();
     const video = videos.find(v => v.id === id);
     
-    // ULTRA-FAST: Pre-initialize micro-chunking for instant play
+    // ULTRA-FAST: Direct video URL for instant play
     if (video && video.bunnyCDNUrl) {
-      videoChunkingService.initializeStream(
-        video.id, 
-        video.bunnyCDNUrl, 
-        '720p'
-      ).catch(error => {
-        console.warn(`⚠️ Failed to initialize chunking for video ${video.id}:`, error);
-      });
+      console.log(`Video ${video.id} ready for direct streaming`);
     }
     
     return video || null;

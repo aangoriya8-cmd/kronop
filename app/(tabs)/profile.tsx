@@ -13,6 +13,8 @@ import {
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Camera, Video } from 'lucide-react-native';
+import * as ImagePicker from 'expo-image-picker';
 import { StatusBar } from 'expo-status-bar';
 import { theme } from '../../constants/theme';
 import profileService from '../../services/profileService';
@@ -41,8 +43,7 @@ export default function ProfileScreen() {
   // Profile states
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'disconnected' | 'error'>('checking');
+  const [error, setError] = useState<string | null>(null);
 
   // Content tabs
   const contentTabs = [
@@ -62,15 +63,16 @@ export default function ProfileScreen() {
   const loadProfile = async () => {
     try {
       setLoading(true);
-      setConnectionStatus('checking');
+      setError(null);
       
-      // Test MongoDB connection first
-      const connectionTest = await profileService.testConnection();
+      // Get profile from service
+      const profileResult = await profileService.getProfile();
       
-      if (!connectionTest.success) {
-        setConnectionStatus('disconnected');
-        // Use mock data when disconnected
-        const mockData: UserData = {
+      if (profileResult.success) {
+        setUserData(profileResult.data);
+      } else {
+        // Use default data
+        const defaultData: UserData = {
           displayName: 'John Doe',
           username: '@johndoe',
           avatar: 'https://picsum.photos/80/80?random=profile',
@@ -80,43 +82,12 @@ export default function ProfileScreen() {
           supporting: 892,
           posts: 234
         };
-        setUserData(mockData);
-        return;
-      }
-
-      setConnectionStatus('connected');
-      
-      // Try to get profile from MongoDB
-      const profileResult = await profileService.getProfile();
-      
-      if (profileResult.success) {
-        setUserData(profileResult.data);
-      } else if (profileResult.createNew) {
-        // Create new profile if not found
-        const newProfileData: UserData = {
-          displayName: 'John Doe',
-          username: 'johndoe',
-          avatar: 'https://picsum.photos/80/80?random=profile',
-          bio: 'Content Creator | Photography Enthusiast | Travel Lover',
-          badge: 'Photographers of Kronop',
-          supporters: 0,
-          supporting: 0,
-          posts: 0
-        };
-        
-        const createResult = await profileService.createProfile(newProfileData);
-        if (createResult.success) {
-          setUserData(createResult.data);
-        } else {
-          throw new Error(createResult.error);
-        }
-      } else {
-        throw new Error(profileResult.error);
+        setUserData(defaultData);
       }
     } catch (error) {
       console.error('Load Profile Error:', error);
-      setConnectionStatus('error');
-      // Fallback to mock data
+      setError('Failed to load profile');
+      // Fallback to default data
       const fallbackData: UserData = {
         displayName: 'John Doe',
         username: '@johndoe',
@@ -139,6 +110,34 @@ export default function ProfileScreen() {
 
   const handleShareProfile = () => {
     Alert.alert('Share Profile', 'Profile sharing feature coming soon!');
+  };
+
+  const handleCameraPress = async () => {
+    try {
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (!result.canceled) {
+        console.log('Photo taken:', result.assets[0].uri);
+        // TODO: Update profile picture
+        Alert.alert('Success', 'Profile photo updated!');
+      }
+    } catch (error) {
+      console.error('Camera error:', error);
+      Alert.alert('Error', 'Failed to open camera');
+    }
+  };
+
+  const handleVideoEditorPress = () => {
+    Alert.alert('Video Editor', 'Video editor coming soon!');
+  };
+
+  const handleSettingsPress = () => {
+    Alert.alert('Settings', 'Settings coming soon!');
   };
 
   const handleTabPress = (tabId: string, index: number) => {
@@ -193,32 +192,6 @@ export default function ProfileScreen() {
     }
   };
 
-  // Connection status indicator
-  const renderConnectionStatus = () => {
-    if (connectionStatus === 'checking') {
-      return (
-        <View style={styles.statusIndicator}>
-          <ActivityIndicator size="small" color={theme.colors.primary.main} />
-          <Text style={styles.statusText}>Checking connection...</Text>
-        </View>
-      );
-    } else if (connectionStatus === 'disconnected') {
-      return (
-        <View style={styles.statusIndicator}>
-          <MaterialIcons name="wifi-off" size={16} color={theme.colors.text.tertiary} />
-          <Text style={styles.statusText}>Offline Mode</Text>
-        </View>
-      );
-    } else if (connectionStatus === 'error') {
-      return (
-        <View style={styles.statusIndicator}>
-          <MaterialIcons name="error" size={16} color={theme.colors.error} />
-          <Text style={styles.statusText}>Connection Error</Text>
-        </View>
-      );
-    }
-    return null;
-  };
 
   if (loading) {
     return (
@@ -232,22 +205,36 @@ export default function ProfileScreen() {
     );
   }
 
+  if (error || !userData) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <StatusBar style="dark" />
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>Error loading profile</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar style="dark" />
       
       {/* Top Bar */}
       <View style={styles.topBar}>
-        <TouchableOpacity style={styles.leftIcon}>
-          <MaterialIcons name="bar-chart" size={24} color={theme.colors.text.primary} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.rightIcon}>
+        <View style={styles.leftIcons}>
+          <TouchableOpacity style={styles.iconButton} onPress={handleCameraPress}>
+            <Camera size={24} color={theme.colors.text.primary} strokeWidth={2} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton} onPress={handleVideoEditorPress}>
+            <Video size={24} color={theme.colors.text.primary} strokeWidth={2} />
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={styles.iconButton} onPress={handleSettingsPress}>
           <MaterialIcons name="settings" size={24} color={theme.colors.text.primary} />
         </TouchableOpacity>
       </View>
 
-      {/* Connection Status */}
-      {renderConnectionStatus()}
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {userData && (
@@ -356,22 +343,6 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
 
-  // Connection Status
-  statusIndicator: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 8,
-    backgroundColor: theme.colors.background.secondary,
-    marginHorizontal: 16,
-    borderRadius: 8,
-    marginTop: 8,
-  },
-  statusText: {
-    fontSize: 12,
-    color: theme.colors.text.secondary,
-    marginLeft: 6,
-  },
 
   // Top Bar
   topBar: {

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   View, 
   Text, 
@@ -23,7 +23,6 @@ import { useSWRContent } from '../../hooks/swr';
 // import { hlsOptimizerService } from '../../services/hlsOptimizer'; // Service removed
 import { CommentSheet } from '../../components/feature/CommentSheet';
 import StatusBarOverlay from '../../components/common/StatusBarOverlay';
-import AudioController from '../../services/AudioController';
 import SupportSection from '../../components/feature/SupportSection';
 import ChannelInfo from '../../components/feature/ChannelInfo';
 
@@ -121,40 +120,27 @@ function ReelItem({
       'Origin': 'https://kronop.app'
     }
   }, (playerInstance) => {
-    playerRef.current = playerInstance;
-    playerInstance.loop = true; // Loop instead of auto-advance
-    AudioController.applyToPlayer(playerInstance, isActive);
-    isPlayerReadyRef.current = true;
-    setIsVideoReady(true);
+    if (playerInstance) {
+      playerRef.current = playerInstance;
+      playerInstance.loop = true; // Loop instead of auto-advance
+      isPlayerReadyRef.current = true;
+      setIsVideoReady(true);
 
-    if (isActive) {
-      playerInstance.play();
+      if (isActive) {
+        playerInstance.play();
+      }
     }
   });
 
-  // Instant memory flush on unmount
-  useEffect(() => {
-    return () => {
-      try {
-        isPlayerReadyRef.current = false;
-        if (playerRef.current) {
-          playerRef.current.pause();
-          playerRef.current = null;
-        }
-      } catch (error) {
-        console.warn('Error cleaning up player:', error);
-      }
-    };
-  }, []);
+  // No cleanup needed - let player manage itself
 
   useEffect(() => {
-    if (playerRef.current && isPlayerReadyRef.current) {
-      AudioController.applyToPlayer(playerRef.current, isActive);
-    }
-    if (isActive && !isPaused) {
-      playerRef.current?.play();
-    } else if (!isActive) {
-      playerRef.current?.pause();
+    if (playerRef.current) {
+      if (isActive && !isPaused) {
+        playerRef.current.play();
+      } else if (!isActive) {
+        playerRef.current.pause();
+      }
     }
   }, [isActive, isPaused]);
 
@@ -277,12 +263,9 @@ export default function ReelsScreen() {
 
   const { data: swrReels, loading: swrLoading, refresh } = useSWRContent('Reel', 1, 50);
 
-  // Simple initialization
-  useEffect(() => {
-    AudioController.initialize().catch(() => {});
-  }, []);
+  // No initialization needed
 
-  // Simple data management
+  // Data loading
   useEffect(() => {
     setLoading(swrLoading);
     const result = Array.isArray(swrReels) ? swrReels : [];
@@ -290,42 +273,42 @@ export default function ReelsScreen() {
   }, [swrReels, swrLoading]);
 
   // Simple interaction handlers
-  const handleLikeChange = useCallback((itemId: string, isLiked: boolean, count: number) => {
+  const handleLikeChange = (itemId: string, isLiked: boolean, count: number) => {
     setStarred(prev => ({ ...prev, [itemId]: isLiked }));
     setLikes(prev => ({ ...prev, [itemId]: count }));
-  }, []);
+  };
 
-  const handleCommentPress = useCallback((itemId: string) => {
+  const handleCommentPress = (itemId: string) => {
     const reel = reels.find(r => r.id === itemId);
     if (reel) {
       setSelectedReel(reel);
       setShowCommentsModal(true);
     }
-  }, [reels]);
+  };
 
-  const handleShareChange = useCallback((itemId: string, count: number) => {
+  const handleShareChange = (itemId: string, count: number) => {
     setShares(prev => ({ ...prev, [itemId]: count }));
-  }, []);
+  };
 
-  const handleSupportChange = useCallback((itemId: string, isSupported: boolean, count: number) => {
+  const handleSupportChange = (itemId: string, isSupported: boolean, count: number) => {
     setSupported(prev => ({ ...prev, [itemId]: isSupported }));
-  }, []);
+  };
 
-  const handleReportPress = useCallback((itemId: string) => {
+  const handleReportPress = (itemId: string) => {
     Alert.alert('Report', 'Report submitted');
-  }, []);
+  };
 
-  const handleSaveChange = useCallback((itemId: string, isSaved: boolean) => {
+  const handleSaveChange = (itemId: string, isSaved: boolean) => {
     setSaved(prev => ({ ...prev, [itemId]: isSaved }));
-  }, []);
+  };
 
-  const handleChannelPress = useCallback((reel: Reel) => {}, []);
+  const handleChannelPress = (reel: Reel) => {};
 
-  const handleViewChange = useCallback((newIndex: number) => {
+  const handleViewChange = (newIndex: number) => {
     setCurrentIndex(newIndex);
-  }, []);
+  };
 
-  const handleAddComment = useCallback(async (itemId: string, text: string) => {
+  const handleAddComment = async (itemId: string, text: string) => {
     const newComment: Comment = {
       id: `comment-${Date.now()}`,
       userId: 'current-user',
@@ -341,7 +324,7 @@ export default function ReelsScreen() {
     }));
 
     return newComment;
-  }, []);
+  };
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -350,10 +333,10 @@ export default function ReelsScreen() {
   };
 
   useFocusEffect(
-    React.useCallback(() => {
+    () => {
       setIsScreenFocused(true);
       return () => setIsScreenFocused(false);
-    }, [])
+    }
   );
 
   const renderReel = ({ item, index }: { item: Reel; index: number }) => {

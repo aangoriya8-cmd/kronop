@@ -79,3 +79,7 @@ config/firebase-admin.json
 ngrok.exe
 google-services.json
 GoogleService-Info.plist
+
+# Metro bundler fix - ignore non-existent upload Bridge folder
+upload Bridge/
+components/upload Bridge/
