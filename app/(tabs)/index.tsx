@@ -20,7 +20,6 @@ import PhotoUpload from '../../components/upload/PhotoUpload';
 import ReelsUpload from '../../components/upload/ReelsUpload';
 import VideoUpload from '../../components/upload/VideoUpload';
 import LiveUpload from '../../components/upload/LiveUpload';
-import ShayariPhotoUpload from '../../components/upload/ShayariUpload';
 import SongUpload from '../../components/upload/SongUpload';
 
 // Bridge imports
@@ -29,7 +28,6 @@ import BridgePhoto from '../../app/bridge-photo';
 import BridgeReels from '../../app/bridge-reels';
 import BridgeVideo from '../../app/bridge-video';
 import BridgeLive from '../../app/bridge-live';
-import BridgeShayari from '../../app/bridge-shayari';
 import BridgeSongs from '../../app/bridge-songs';
 
 // Mock songs data for music player - Hindi New Songs (15 Songs)
@@ -478,22 +476,6 @@ export default function HomeScreen() {
     }
   }, [currentSongId, isPlaying]);
 
-  const handlePrevious = useCallback(() => {
-    const currentIndex = mockSongs.findIndex(song => song.id === currentSongId);
-    if (currentIndex > 0) {
-      setCurrentSongId(mockSongs[currentIndex - 1].id);
-      setIsPlaying(true);
-    }
-  }, [currentSongId]);
-
-  const handleNext = useCallback(() => {
-    const currentIndex = mockSongs.findIndex(song => song.id === currentSongId);
-    if (currentIndex < mockSongs.length - 1) {
-      setCurrentSongId(mockSongs[currentIndex + 1].id);
-      setIsPlaying(true);
-    }
-  }, [currentSongId]);
-
   // Memoized photo item renderer
   const PhotoItem = memo(({ item }: { item: any }) => (
     <TouchableOpacity style={styles.photoItem} activeOpacity={0.8}>
@@ -548,14 +530,6 @@ export default function HomeScreen() {
       {/* Music Controls - Right Side */}
       <View style={styles.musicControls}>
         <TouchableOpacity 
-          style={styles.controlButton}
-          onPress={handlePrevious}
-          activeOpacity={0.7}
-        >
-          <MaterialIcons name="skip-previous" size={24} color="#fff" />
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
           style={[styles.playButton, currentSongId === item.id && isPlaying && styles.playButtonActive]}
           onPress={() => handlePlayPause(item.id)}
           activeOpacity={0.7}
@@ -569,10 +543,13 @@ export default function HomeScreen() {
         
         <TouchableOpacity 
           style={styles.controlButton}
-          onPress={handleNext}
+          onPress={() => {
+            // Share functionality
+            Alert.alert('Share', `Sharing ${item.title} by ${item.artist}`);
+          }}
           activeOpacity={0.7}
         >
-          <MaterialIcons name="skip-next" size={24} color="#fff" />
+          <MaterialIcons name="share" size={24} color="#fff" />
         </TouchableOpacity>
       </View>
     </View>
@@ -729,14 +706,6 @@ export default function HomeScreen() {
               
               <TouchableOpacity 
                 style={styles.uploadOption}
-                onPress={() => handleUploadOptionPress('Shayari')}
-              >
-                <Ionicons name="create" size={24} color="#6A5ACD" />
-                <Text style={styles.uploadOptionText}>Shayari</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity 
-                style={styles.uploadOption}
                 onPress={() => handleUploadOptionPress('Song')}
               >
                 <Ionicons name="musical-notes" size={24} color="#6A5ACD" />
@@ -817,7 +786,6 @@ export default function HomeScreen() {
               {selectedUploadScreen === 'Reels' && 'Reels Upload'}
               {selectedUploadScreen === 'Video' && 'Video Upload'}
               {selectedUploadScreen === 'Live' && 'Live Upload'}
-              {selectedUploadScreen === 'Shayari' && 'Shayari Upload'}
               {selectedUploadScreen === 'Song' && 'Song Upload'}
             </Text>
             
@@ -831,7 +799,6 @@ export default function HomeScreen() {
             {selectedUploadScreen === 'Reels' && <BridgeReels onClose={() => setSelectedUploadScreen(null)} />}
             {selectedUploadScreen === 'Video' && <BridgeVideo onClose={() => setSelectedUploadScreen(null)} />}
             {selectedUploadScreen === 'Live' && <BridgeLive onClose={() => setSelectedUploadScreen(null)} />}
-            {selectedUploadScreen === 'Shayari' && <BridgeShayari onClose={() => setSelectedUploadScreen(null)} />}
             {selectedUploadScreen === 'Song' && <BridgeSongs onClose={() => setSelectedUploadScreen(null)} />}
           </View>
         </View>

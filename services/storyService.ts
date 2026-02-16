@@ -129,7 +129,6 @@ class StoryService {
 
       return { success: true, data: mockStories };
     } catch (error: any) {
-      console.error('StoryService: Failed to load stories:', error);
       return { success: false, data: [], error: error.message };
     }
   }
@@ -139,7 +138,6 @@ class StoryService {
       const result = await storiesApi.getStories(page, limit);
       return result;
     } catch (error: any) {
-      console.error('StoryService: Failed to get stories:', error);
       throw error;
     }
   }

@@ -6,18 +6,14 @@ import { authService } from './authService';
 
 // Get base URL from environment - SINGLE SOURCE OF TRUTH
 const getBaseUrl = () => {
-  console.log('[API_CONFIG]: Getting base URL...');
-  
   // Use only KRONOP_API_URL - single source of truth
   const url = API_KEYS.KRONOP_API_URL;
-  console.log('[API_CONFIG]: Using KRONOP_API_URL:', url);
   return url;
 };
 
 const base = getBaseUrl();
 const cleanBase = base.replace(/\/+$/, ''); 
 export const API_URL = cleanBase.endsWith('/api') ? cleanBase : `${cleanBase}/api`;
-console.log('[API_CONFIG]: API Base URL configured:', API_URL);
 
 const API_CLIENT = axios.create({
   baseURL: API_URL,
@@ -51,7 +47,6 @@ const PROFILE_TTL_MS = 60 * 1000;
 const apiCall = async (endpoint: string, options: RequestInit = {}) => {
   try {
     const fullUrl = `${API_URL}${endpoint}`;
-    console.log(`📡 Fetching: ${fullUrl}`);
     
     // BYPASS LOGIN FOR TESTING: Use dummy headers instead of auth
     // const headers = await authService.createAuthHeaders();
@@ -75,13 +70,6 @@ const apiCall = async (endpoint: string, options: RequestInit = {}) => {
       finalHeaders = headersWithoutContentType;
     }
     
-    console.log(`[UPLOADING START] Making request to: ${fullUrl}`);
-    console.log(`[FILE DETAILS] Request headers:`, JSON.stringify(finalHeaders, null, 2));
-    console.log(`[FILE DETAILS] Request options:`, JSON.stringify({
-      method: options.method || 'GET',
-      body: finalBody ? (finalBody instanceof FormData ? '[FormData]' : finalBody) : 'no body',
-    }, null, 2));
-    
     const response = await fetch(fullUrl, {
       headers: finalHeaders,
       body: finalBody,
@@ -89,23 +77,19 @@ const apiCall = async (endpoint: string, options: RequestInit = {}) => {
     });
 
     if (!response.ok) {
-      console.error(`[SERVER RESPONSE] API Error: ${response.status} ${response.statusText} at ${fullUrl}`);
-      
       // Try to get error response body
       let errorDetails = '';
       try {
         const errorText = await response.text();
         errorDetails = errorText;
-        console.error(`[SERVER RESPONSE] Error response body:`, errorText);
       } catch (e) {
-        console.error(`[SERVER RESPONSE] Could not read error response body`);
+        // Could not read error response
       }
       
       throw new Error(`API Error: ${response.status} ${response.statusText} - ${errorDetails}`);
     }
 
     const result = await response.json();
-    console.log('[SERVER RESPONSE] API Response received:', result);
     
     // Auto-unwrap data if it exists to fix "filter is not a function" errors
     if (result && result.success && Array.isArray(result.data)) {
@@ -114,7 +98,6 @@ const apiCall = async (endpoint: string, options: RequestInit = {}) => {
     
     return result;
   } catch (error) {
-    console.error(`[SERVER RESPONSE] API Call Failed: ${endpoint}`, error);
     throw error;
   }
 };
@@ -123,19 +106,30 @@ const apiCall = async (endpoint: string, options: RequestInit = {}) => {
 // Upload system completely removed - no upload functionality
 export const photosApi = {
   getPhotos: async (page = 1, limit = 20, category?: string) => {
-    const params = new URLSearchParams({
-      page: page.toString(),
-      limit: limit.toString(),
-    });
-    if (category && category !== 'all') {
-      params.append('category', category);
+    try {
+      const params = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+      });
+      if (category && category !== 'all') {
+        params.append('category', category);
+      }
+      
+      const result = await apiCall(`/photos?${params}`);
+      
+      // Handle empty data gracefully
+      if (!result || (Array.isArray(result) && result.length === 0)) {
+        return [];
+      }
+      
+      return result;
+    } catch (error) {
+      // Return empty array on error to prevent crashes
+      return [];
     }
-    
-    return await apiCall(`/photos?${params}`);
   },
 
   getUserPhotos: async () => {
-    console.log('📡 Calling getUserPhotos API...');
     return await apiCall('/photos/user');
   },
 

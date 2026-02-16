@@ -2,8 +2,6 @@
 // API-based service for Reels management
 // Handles all Reels operations through REST API
 
-import { authService } from './authService';
-// import { reelsBridge } from './bridges/ReelsBridge'; // Bridge removed - using direct API
 import { BUNNY_CONFIG, API_KEYS } from '../constants/Config';
 
 export interface ReelData {
@@ -37,29 +35,14 @@ export class ReelsService {
   private readonly API_BASE = process.env.EXPO_PUBLIC_API_URL || process.env.PRODUCTION_API_URL || 'http://localhost:3000';
 
   /**
-   * Get authentication token for API calls
-   */
-  private async getAuthToken(): Promise<string | null> {
-    try {
-      return await authService.getAuthToken();
-    } catch (error) {
-      console.error(' ReelsService: Error getting auth token:', error);
-      console.error('🎬 ReelsService: Error getting auth token:', error);
-      return null;
-    }
-  }
-
-  /**
    * Create headers for API calls
    */
   private async createHeaders(contentType: string = 'application/json'): Promise<Record<string, string>> {
     // BYPASS LOGIN: No authentication required for testing
     return {
       'Content-Type': contentType,
-      // 'Authorization': 'Bearer dummy_token_for_testing'
+    // 'Authorization': 'Bearer dummy_token_for_testing'
     };
-    // Original code commented for testing:
-    // return await authService.createAuthHeaders(contentType);
   }
 
   /**

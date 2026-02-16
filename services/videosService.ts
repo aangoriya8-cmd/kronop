@@ -2,7 +2,6 @@
 // API-based service for Videos management
 // Handles all video operations through REST API
 
-import { authService } from './authService';
 // import { videoBridge } from './bridges/VideoBridge'; // Bridge removed - using new app/bridge
 import { BUNNY_CONFIG, API_KEYS } from '../constants/Config';
 
@@ -36,18 +35,6 @@ export class VideosService {
   private readonly API_BASE = process.env.EXPO_PUBLIC_API_URL || process.env.PRODUCTION_API_URL || 'http://localhost:3000';
 
   /**
-   * Get authentication token for API calls
-   */
-  private async getAuthToken(): Promise<string | null> {
-    try {
-      return await authService.getAuthToken();
-    } catch (error) {
-      console.error('🎥 VideosService: Error getting auth token:', error);
-      return null;
-    }
-  }
-
-  /**
    * Create headers for API calls
    */
   private async createHeaders(contentType: string = 'application/json'): Promise<Record<string, string>> {
@@ -56,8 +43,6 @@ export class VideosService {
       'Content-Type': contentType,
       // 'Authorization': 'Bearer dummy_token_for_testing'
     };
-    // Original code commented for testing:
-    // return await authService.createAuthHeaders(contentType);
   }
 
   async saveVideoMetadataOnly(videoData: {

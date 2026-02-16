@@ -12,15 +12,15 @@ const WebSocket = require('ws');
 // Models & Services
 const User = require('./models/User');
 const Content = require('./models/Content');
-const BunnyContentService = require('./services/bunnyContentService');
+// const BunnyContentService = require('./services/bunnyContentService');
 // const BunnySyncService = require('./services/bunnySyncService'); // Service removed
 // const DatabaseService = require('./services/databaseService'); // Service removed
-const autoSyncIntegration = require('./services/autoSyncIntegration');
+// const autoSyncIntegration = require('./services/autoSyncIntegration');
 // const AutoSyncService = require('./services/autoSyncService'); // Service removed
 // const RealtimeService = require('./services/realtimeService'); // Service removed
 // const RedisCacheService = require('./services/redisCacheService'); // Service removed
 // const UserInterestTrackingService = require('./services/userInterestTrackingService'); // Service removed
-const SignedUrlService = require('./services/signedUrlService');
+// const SignedUrlService = require('./services/signedUrlService');
 
 // Routes
 const contentRoutes = require('./api/content');

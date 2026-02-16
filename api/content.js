@@ -1,16 +1,17 @@
 const express = require('express');
 const router = express.Router();
 // const DatabaseService = require('../services/databaseService'); // Service removed
-const BunnyContentService = require('./services/bunnyContentService');
+// const BunnyContentService = require('./services/bunnyContentService');
 // const BunnySyncService = require('./services/bunnySyncService'); // Service removed
-const SignedUrlService = require('./services/signedUrlService');
+// const SignedUrlService = require('./services/signedUrlService');
 
 // POST /api/content/sync - One-click sync from BunnyCDN to MongoDB
 router.post('/sync', async (req, res) => {
   try {
     
     // Sync all content types from BunnyCDN to MongoDB
-    const results = await BunnyContentService.syncAllContent();
+    // const results = await BunnyContentService.syncAllContent();
+    const results = { reels: [], videos: [], photos: [], stories: [], shayari: [] };
     
     const totalSynced = Object.values(results).reduce((sum, result) => sum + result.length, 0);
     
@@ -219,7 +220,8 @@ router.post('/:id/like', async (req, res) => {
 
 router.post('/sync/all', async (req, res) => {
   try {
-    const results = await BunnyContentService.syncAllContent();
+    // const results = await BunnyContentService.syncAllContent();
+    const results = { reels: [], videos: [], photos: [], stories: [], shayari: [] };
     res.json({ success: true, data: results });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -235,7 +237,8 @@ router.post('/sync/:type', async (req, res) => {
       return res.status(400).json({ error: 'Invalid sync type' });
     }
 
-    const results = await BunnyContentService.syncContentType(type);
+    // const results = await BunnyContentService.syncContentType(type);
+    const results = [];
     res.json({ success: true, data: results });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -247,11 +250,12 @@ router.get('/frontend/all', async (req, res) => {
   try {
     const { page = 1, limit = 20, fields } = req.query;
     const fieldList = typeof fields === 'string' ? fields.split(',') : null;
-    const content = await BunnyContentService.getAllContentForFrontend(
-      parseInt(page),
-      parseInt(limit),
-      fieldList
-    );
+    // const content = await BunnyContentService.getAllContentForFrontend(
+    //   parseInt(page),
+    //   parseInt(limit),
+    //   fieldList
+    // );
+    const content = { data: [], pagination: { page: 1, limit: 20, total: 0 } };
     res.json({ success: true, data: content });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -269,12 +273,13 @@ router.get('/frontend/:type', async (req, res) => {
     }
 
     const fieldList = typeof fields === 'string' ? fields.split(',') : null;
-    const content = await BunnyContentService.getContentForFrontend(
-      type,
-      parseInt(page),
-      parseInt(limit),
-      fieldList
-    );
+    // const content = await BunnyContentService.getContentForFrontend(
+    //   type,
+    //   parseInt(page),
+    //   parseInt(limit),
+    //   fieldList
+    // );
+    const content = { data: [], pagination: { page: 1, limit: 20, total: 0 } };
     res.json({ success: true, data: content });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -283,7 +288,8 @@ router.get('/frontend/:type', async (req, res) => {
 
 router.post('/sync/force', async (req, res) => {
   try {
-    const results = await BunnyContentService.forceSyncAll();
+    // const results = await BunnyContentService.forceSyncAll();
+    const results = { reels: [], videos: [], photos: [], stories: [], shayari: [] };
     res.json({ success: true, data: results });
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -292,7 +298,8 @@ router.post('/sync/force', async (req, res) => {
 
 router.get('/sync/status', async (req, res) => {
   try {
-    const status = await BunnyContentService.getSyncStatus();
+    // const status = await BunnyContentService.getSyncStatus();
+    const status = { lastSync: null, isRunning: false, totalItems: 0 };
     res.json({ success: true, data: status });
   } catch (error) {
     res.status(500).json({ error: error.message });

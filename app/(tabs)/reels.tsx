@@ -132,7 +132,7 @@ function ReelItem({
     }
   });
 
-  // No cleanup needed - let player manage itself
+  // Player manages itself automatically - no manual cleanup needed
 
   useEffect(() => {
     if (playerRef.current) {
@@ -263,7 +263,7 @@ export default function ReelsScreen() {
 
   const { data: swrReels, loading: swrLoading, refresh } = useSWRContent('Reel', 1, 50);
 
-  // No initialization needed
+  // Player lifecycle managed by useVideoPlayer hook - no manual intervention
 
   // Data loading
   useEffect(() => {

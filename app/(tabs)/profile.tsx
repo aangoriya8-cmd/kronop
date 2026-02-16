@@ -1,178 +1,137 @@
-import React, { useState, useEffect, useRef } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
+import React, { useState, useEffect } from 'react';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  TouchableOpacity, 
+  ScrollView, 
   Image,
-  ScrollView,
-  Dimensions,
+  TextInput,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  StatusBar
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Camera, Video } from 'lucide-react-native';
-import * as ImagePicker from 'expo-image-picker';
-import { StatusBar } from 'expo-status-bar';
-import { theme } from '../../constants/theme';
-import profileService from '../../services/profileService';
+import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import profileService from '../../services/profileService.js';
 
-const { width: screenWidth } = Dimensions.get('window');
-
-// Define user data type
-interface UserData {
-  displayName: string;
-  username: string;
-  avatar: string;
-  bio: string;
-  badge: string;
-  supporters: number;
-  supporting: number;
-  posts: number;
-}
+const mockUserData = {
+  displayName: 'John Doe',
+  username: 'johndoe',
+  bio: 'Passionate about creating amazing content and connecting with people around the world.',
+  avatar: 'https://picsum.photos/80/80?random=profile',
+  coverPhoto: 'https://picsum.photos/400/150?random=cover',
+  supporters: 0,
+  supporting: 0,
+  posts: 0,
+  badge: 'Creator'
+};
 
 export default function ProfileScreen() {
-  const router = useRouter();
   const insets = useSafeAreaInsets();
-  const [activeTab, setActiveTab] = useState('reels');
-  const [tabIndicatorPosition, setTabIndicatorPosition] = useState(0);
-  const scrollViewRef = useRef<ScrollView>(null);
-  
-  // Profile states
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [userData, setUserData] = useState(mockUserData);
+  const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('video');
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState({
+    displayName: '',
+    username: '',
+    bio: '',
+    coverPhoto: ''
+  });
 
-  // Content tabs
-  const contentTabs = [
-    { id: 'reels', label: 'Reels' },
+  const tabs = [
     { id: 'video', label: 'Video' },
-    { id: 'live', label: 'Live' },
+    { id: 'reels', label: 'Reels' },
     { id: 'photo', label: 'Photo' },
+    { id: 'live', label: 'Live' },
     { id: 'shayari', label: 'Shayari' },
     { id: 'songs', label: 'Songs' }
   ];
 
-  // Load profile on mount
   useEffect(() => {
     loadProfile();
   }, []);
 
   const loadProfile = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      setError(null);
-      
-      // Get profile from service
-      const profileResult = await profileService.getProfile();
-      
-      if (profileResult.success) {
-        setUserData(profileResult.data);
-      } else {
-        // Use default data
-        const defaultData: UserData = {
-          displayName: 'John Doe',
-          username: '@johndoe',
-          avatar: 'https://picsum.photos/80/80?random=profile',
-          bio: 'Content Creator | Photography Enthusiast | Travel Lover',
-          badge: 'Photographers of Kronop',
-          supporters: 15420,
-          supporting: 892,
-          posts: 234
-        };
-        setUserData(defaultData);
+      const result = await profileService.fetchProfile();
+      if (result.success && result.data) {
+        setUserData(result.data);
+        setEditData({
+          displayName: result.data.displayName || '',
+          username: result.data.username || '',
+          bio: result.data.bio || '',
+          coverPhoto: result.data.coverPhoto || ''
+        });
       }
     } catch (error) {
-      console.error('Load Profile Error:', error);
-      setError('Failed to load profile');
-      // Fallback to default data
-      const fallbackData: UserData = {
-        displayName: 'John Doe',
-        username: '@johndoe',
-        avatar: 'https://picsum.photos/80/80?random=profile',
-        bio: 'Content Creator | Photography Enthusiast | Travel Lover',
-        badge: 'Photographers of Kronop',
-        supporters: 15420,
-        supporting: 892,
-        posts: 234
-      };
-      setUserData(fallbackData);
+      console.error('Failed to load profile:', error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleEditProfile = () => {
-    router.push('/edit-profile');
+    setEditData({
+      displayName: userData.displayName,
+      username: userData.username,
+      bio: userData.bio,
+      coverPhoto: userData.coverPhoto || ''
+    });
+    setIsEditing(true);
   };
 
-  const handleShareProfile = () => {
-    Alert.alert('Share Profile', 'Profile sharing feature coming soon!');
-  };
-
-  const handleCameraPress = async () => {
+  const handleSaveProfile = async () => {
+    setLoading(true);
     try {
-      const result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 0.8,
-      });
-
-      if (!result.canceled) {
-        console.log('Photo taken:', result.assets[0].uri);
-        // TODO: Update profile picture
-        Alert.alert('Success', 'Profile photo updated!');
+      const result = await profileService.updateProfile(editData);
+      if (result.success) {
+        setUserData(prev => ({
+          ...prev,
+          ...editData
+        }));
+        setIsEditing(false);
+        Alert.alert('Success', 'Profile updated successfully');
+      } else {
+        Alert.alert('Error', result.error || 'Failed to update profile');
       }
     } catch (error) {
-      console.error('Camera error:', error);
-      Alert.alert('Error', 'Failed to open camera');
+      Alert.alert('Error', 'Failed to update profile');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleVideoEditorPress = () => {
-    Alert.alert('Video Editor', 'Video editor coming soon!');
+  const handleShareProfile = () => {
+    Alert.alert('Share Profile', 'Profile share functionality coming soon!');
   };
 
-  const handleSettingsPress = () => {
-    Alert.alert('Settings', 'Settings coming soon!');
-  };
-
-  const handleTabPress = (tabId: string, index: number) => {
-    setActiveTab(tabId);
-    const tabWidth = 80;
-    const indicatorPosition = 16 + (index * (tabWidth + 8));
-    setTabIndicatorPosition(indicatorPosition);
-    
-    scrollViewRef.current?.scrollTo({ x: Math.max(0, indicatorPosition - 100), animated: true });
-  };
-
-  const renderContent = () => {
+  const renderTabContent = () => {
     switch (activeTab) {
-      case 'reels':
-        return (
-          <View style={styles.contentContainer}>
-            <Text style={styles.emptyText}>No reels yet</Text>
-          </View>
-        );
       case 'video':
         return (
           <View style={styles.contentContainer}>
             <Text style={styles.emptyText}>No videos yet</Text>
           </View>
         );
-      case 'live':
+      case 'reels':
         return (
           <View style={styles.contentContainer}>
-            <Text style={styles.emptyText}>Not live right now</Text>
+            <Text style={styles.emptyText}>No reels yet</Text>
           </View>
         );
       case 'photo':
         return (
           <View style={styles.contentContainer}>
             <Text style={styles.emptyText}>No photos yet</Text>
+          </View>
+        );
+      case 'live':
+        return (
+          <View style={styles.contentContainer}>
+            <Text style={styles.emptyText}>No live streams yet</Text>
           </View>
         );
       case 'shayari':
@@ -192,346 +151,400 @@ export default function ProfileScreen() {
     }
   };
 
-
-  if (loading) {
+  if (loading && !userData) {
     return (
-      <SafeAreaView style={styles.container}>
-        <StatusBar style="dark" />
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={theme.colors.primary.main} />
-          <Text style={styles.loadingText}>Loading profile...</Text>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
-  if (error || !userData) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <StatusBar style="dark" />
-        <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>Error loading profile</Text>
-        </View>
-      </SafeAreaView>
+      <View style={[styles.container, styles.loadingContainer]}>
+        <ActivityIndicator size="large" color="#000" />
+      </View>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style="dark" />
-      
-      {/* Top Bar */}
-      <View style={styles.topBar}>
-        <View style={styles.leftIcons}>
-          <TouchableOpacity style={styles.iconButton} onPress={handleCameraPress}>
-            <Camera size={24} color={theme.colors.text.primary} strokeWidth={2} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton} onPress={handleVideoEditorPress}>
-            <Video size={24} color={theme.colors.text.primary} strokeWidth={2} />
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      {/* Top Header */}
+      <View style={styles.header}>
+        <View style={styles.headerLeft}>
+          <Text style={styles.username}>Your Profile</Text>
+        </View>
+        <View style={styles.headerRight}>
+          <Image 
+            source={{ uri: 'https://picsum.photos/32/32?random=logo' }} 
+            style={styles.logo}
+          />
+          <TouchableOpacity style={styles.iconButton}>
+            <Ionicons name="settings-outline" size={20} color="#000" />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.iconButton} onPress={handleSettingsPress}>
-          <MaterialIcons name="settings" size={24} color={theme.colors.text.primary} />
-        </TouchableOpacity>
       </View>
 
-
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {userData && (
-          <>
-            {/* User Info Section */}
-            <View style={styles.userInfoSection}>
-              <View style={styles.nameSection}>
+        {/* Cover Photo */}
+        <View style={styles.coverPhotoContainer}>
+          <Image source={{ uri: userData.coverPhoto }} style={styles.coverPhoto} />
+          {isEditing && (
+            <TouchableOpacity style={styles.changeCoverButton}>
+              <Ionicons name="camera" size={20} color="#fff" />
+              <Text style={styles.changeCoverText}>Change Cover</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {/* User Info Section */}
+        <View style={styles.userInfoSection}>
+          <View style={styles.userTextContainer}>
+            {isEditing ? (
+              <>
+                <TextInput
+                  style={styles.displayNameInput}
+                  value={editData.displayName}
+                  onChangeText={(text) => setEditData(prev => ({ ...prev, displayName: text }))}
+                  placeholder="Display Name"
+                  placeholderTextColor="#999"
+                />
+                <TextInput
+                  style={styles.usernameInput}
+                  value={editData.username}
+                  onChangeText={(text) => setEditData(prev => ({ ...prev, username: text }))}
+                  placeholder="@username"
+                  placeholderTextColor="#999"
+                />
+                <TextInput
+                  style={styles.bioInput}
+                  multiline
+                  value={editData.bio}
+                  onChangeText={(text) => setEditData(prev => ({ ...prev, bio: text }))}
+                  placeholder="Write your bio..."
+                  placeholderTextColor="#999"
+                  textAlignVertical="top"
+                />
+              </>
+            ) : (
+              <>
                 <Text style={styles.displayName}>{userData.displayName}</Text>
-                <Text style={styles.username}>{userData.username}</Text>
-              </View>
-              <View style={styles.photoSection}>
-                <View style={styles.photoContainer}>
-                  <Image source={{ uri: userData.avatar }} style={styles.profilePhoto} />
-                  <TouchableOpacity style={styles.addPhotoButton}>
-                    <MaterialIcons name="add" size={16} color="#fff" />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
+                <Text style={styles.usernameText}>@{userData.username}</Text>
+                <Text style={styles.bio}>{userData.bio}</Text>
+              </>
+            )}
+          </View>
+          
+          <View style={styles.profilePictureContainer}>
+            <Image source={{ uri: userData.avatar }} style={styles.profilePicture} />
+            {isEditing && (
+              <TouchableOpacity style={styles.changePhotoButton}>
+                <Ionicons name="camera" size={16} color="#fff" />
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
 
-            {/* Bio and Badge */}
-            <View style={styles.bioSection}>
-              <Text style={styles.bio}>{userData.bio}</Text>
-              <TouchableOpacity style={styles.badgeButton}>
-                <Text style={styles.badgeText}>{userData.badge}</Text>
-              </TouchableOpacity>
-            </View>
+        {/* Stats Section */}
+        <View style={styles.statsSection}>
+          <Text style={styles.statsText}>{userData.supporters} supporters • {userData.supporting} supporting • {userData.posts} posts</Text>
+        </View>
 
-            {/* Supporters Section */}
-            <View style={styles.supportersSection}>
-              <TouchableOpacity style={styles.supporterItem}>
-                <Text style={styles.supporterNumber}>{userData.supporters.toLocaleString()}</Text>
-                <Text style={styles.supporterLabel}>Supporters</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.supporterItem}>
-                <Text style={styles.supporterNumber}>{userData.supporting.toLocaleString()}</Text>
-                <Text style={styles.supporterLabel}>Supporting</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Action Buttons */}
-            <View style={styles.actionButtons}>
-              <TouchableOpacity style={styles.actionButton} onPress={handleEditProfile}>
-                <Text style={styles.actionButtonText}>Edit profile</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.actionButton} onPress={handleShareProfile}>
-                <Text style={styles.actionButtonText}>Share profile</Text>
-              </TouchableOpacity>
-            </View>
-
-            {/* Content Tabs */}
-            <View style={styles.tabsContainer}>
-              <ScrollView 
-                ref={scrollViewRef}
-                horizontal 
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.tabsScroll}
+        {/* Buttons */}
+        <View style={styles.buttonsContainer}>
+          {isEditing ? (
+            <>
+              <TouchableOpacity 
+                style={[styles.button, styles.saveButton]} 
+                onPress={handleSaveProfile}
+                disabled={loading}
               >
-                {contentTabs.map((tab, index) => (
-                  <TouchableOpacity
-                    key={tab.id}
-                    style={[
-                      styles.tab,
-                      activeTab === tab.id && styles.activeTab
-                    ]}
-                    onPress={() => handleTabPress(tab.id, index)}
-                  >
-                    <Text style={[
-                      styles.tabText,
-                      activeTab === tab.id && styles.activeTabText
-                    ]}>
-                      {tab.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
+                <Text style={[styles.buttonText, styles.saveButtonText]}>
+                  {loading ? 'Saving...' : 'Save'}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.button, styles.cancelButton]} 
+                onPress={() => setIsEditing(false)}
+              >
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <TouchableOpacity style={[styles.button, styles.editButton]} onPress={handleEditProfile}>
+                <Text style={styles.buttonText}>Edit Profile</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={[styles.button, styles.shareButton]} onPress={handleShareProfile}>
+                <Text style={styles.buttonText}>Share Profile</Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
 
-            {/* Active Tab Indicator */}
-            <View style={[styles.tabIndicator, { left: tabIndicatorPosition }]} />
+        {/* Tabs Section */}
+        <View style={styles.tabsContainer}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            {tabs.map((tab) => (
+              <TouchableOpacity
+                key={tab.id}
+                style={[
+                  styles.tab,
+                  activeTab === tab.id && styles.activeTab
+                ]}
+                onPress={() => setActiveTab(tab.id)}
+              >
+                <Text style={[
+                  styles.tabText,
+                  activeTab === tab.id && styles.activeTabText
+                ]}>
+                  {tab.label}
+                </Text>
+                {activeTab === tab.id && <View style={styles.tabIndicator} />}
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
 
-            {/* Content Area */}
-            {renderContent()}
-          </>
-        )}
+        {/* Tab Content */}
+        {renderTabContent()}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background.primary,
+    backgroundColor: '#000000',
   },
-  
-  // Loading
   loadingContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  loadingText: {
-    fontSize: 16,
-    color: theme.colors.text.secondary,
-    marginTop: 12,
-  },
-
-
-  // Top Bar
-  topBar: {
-    height: 60,
+  header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
-    backgroundColor: theme.colors.background.primary,
+    paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: theme.colors.border.primary,
+    borderBottomColor: '#1A1A1A',
   },
-  leftIcon: {
-    padding: 8,
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  rightIcon: {
-    padding: 8,
+  username: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
   },
-
-  // Scroll View
+  verifiedIcon: {
+    marginLeft: 4,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  logo: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+  },
+  iconButton: {
+    padding: 4,
+  },
   scrollView: {
     flex: 1,
   },
-
-  // User Info Section
+  coverPhotoContainer: {
+    position: 'relative',
+    width: '100%',
+    height: 150,
+  },
+  coverPhoto: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  changeCoverButton: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(139, 0, 255, 0.8)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    gap: 6,
+  },
+  changeCoverText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '500',
+  },
   userInfoSection: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginTop: 20,
     paddingHorizontal: 16,
+    paddingVertical: 40,
+    borderBottomWidth: 1,
+    borderBottomColor: '#1A1A1A',
+    marginTop: -30,
   },
-  nameSection: {
+  userTextContainer: {
     flex: 1,
-    marginRight: 20,
+    marginRight: 16,
   },
   displayName: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: theme.colors.text.primary,
+    color: '#FFFFFF',
     marginBottom: 4,
   },
-  username: {
-    fontSize: 15,
-    color: theme.colors.text.secondary,
-    fontWeight: 'normal',
+  displayNameInput: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: '#8B00FF',
+    paddingBottom: 2,
   },
-  photoSection: {
-    alignItems: 'flex-end',
+  usernameText: {
+    fontSize: 16,
+    color: '#666666',
+    marginBottom: 16,
   },
-  photoContainer: {
-    position: 'relative',
-  },
-  profilePhoto: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-  },
-  addPhotoButton: {
-    position: 'absolute',
-    bottom: -5,
-    right: -5,
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: theme.colors.primary.main,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: theme.colors.background.primary,
-  },
-
-  // Bio and Badge
-  bioSection: {
-    marginTop: 10,
-    paddingHorizontal: 16,
+  usernameInput: {
+    fontSize: 16,
+    color: '#666666',
+    marginBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#8B00FF',
+    paddingBottom: 2,
   },
   bio: {
     fontSize: 14,
-    color: theme.colors.text.primary,
+    color: '#CCCCCC',
     lineHeight: 20,
-    marginBottom: 8,
   },
-  badgeButton: {
-    backgroundColor: theme.colors.background.secondary,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 15,
-    alignSelf: 'flex-start',
-    borderWidth: 1,
-    borderColor: theme.colors.border.primary,
-  },
-  badgeText: {
-    fontSize: 12,
-    color: theme.colors.text.secondary,
-    fontWeight: '500',
-  },
-
-  // Supporters Section
-  supportersSection: {
-    flexDirection: 'row',
-    marginTop: 12,
-    paddingHorizontal: 16,
-  },
-  supporterItem: {
-    marginRight: 30,
-    alignItems: 'center',
-  },
-  supporterNumber: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: theme.colors.text.primary,
-  },
-  supporterLabel: {
+  bioInput: {
     fontSize: 14,
-    color: theme.colors.text.tertiary,
-    marginTop: 2,
+    color: '#FFFFFF',
+    lineHeight: 20,
+    borderWidth: 1,
+    borderColor: '#8B00FF',
+    borderRadius: 8,
+    padding: 8,
+    minHeight: 60,
+    textAlignVertical: 'top',
+    backgroundColor: '#1A1A1A',
   },
-
-  // Action Buttons
-  actionButtons: {
-    flexDirection: 'row',
-    marginTop: 20,
-    paddingHorizontal: 16,
-    gap: 12,
+  profilePictureContainer: {
+    position: 'relative',
   },
-  actionButton: {
-    flex: 1,
-    height: 40,
-    backgroundColor: theme.colors.background.secondary,
-    borderRadius: 10,
+  profilePicture: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 3,
+    borderColor: '#000000',
+  },
+  changePhotoButton: {
+    position: 'absolute',
+    bottom: -4,
+    right: -4,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#8B00FF',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: theme.colors.border.primary,
+    borderWidth: 2,
+    borderColor: '#000000',
   },
-  actionButtonText: {
+  statsSection: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#1A1A1A',
+  },
+  statsText: {
+    fontSize: 14,
+    color: '#666666',
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#1A1A1A',
+  },
+  button: {
+    flex: 1,
+    height: 34,
+    borderRadius: 8,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  editButton: {
+    backgroundColor: '#1A1A1A',
+    borderColor: '#8B00FF',
+  },
+  shareButton: {
+    backgroundColor: '#1A1A1A',
+    borderColor: '#8B00FF',
+  },
+  saveButton: {
+    backgroundColor: '#8B00FF',
+    borderColor: '#8B00FF',
+  },
+  cancelButton: {
+    backgroundColor: '#1A1A1A',
+    borderColor: '#8B00FF',
+  },
+  buttonText: {
     fontSize: 14,
     fontWeight: '600',
-    color: theme.colors.text.primary,
+    color: '#FFFFFF',
   },
-
-  // Content Tabs
+  saveButtonText: {
+    color: '#FFFFFF',
+  },
   tabsContainer: {
-    marginTop: 20,
-    position: 'relative',
-    backgroundColor: theme.colors.background.primary,
-  },
-  tabsScroll: {
-    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#1A1A1A',
   },
   tab: {
     paddingHorizontal: 20,
-    paddingVertical: 12,
-    marginRight: 8,
+    paddingVertical: 16,
+    position: 'relative',
   },
   activeTab: {
-    // Active tab styling (can be empty if using indicator)
+    // Active tab styling handled by indicator
   },
   tabText: {
-    fontSize: 14,
-    color: theme.colors.text.tertiary,
+    fontSize: 16,
+    color: '#666666',
     fontWeight: '500',
   },
   activeTabText: {
-    color: theme.colors.text.primary,
+    color: '#FFFFFF',
     fontWeight: '600',
   },
-
-  // Tab Indicator
   tabIndicator: {
-    height: 2,
-    backgroundColor: theme.colors.text.primary,
-    width: 60,
     position: 'absolute',
     bottom: 0,
+    left: 20,
+    right: 20,
+    height: 2,
+    backgroundColor: '#8B00FF',
   },
-
-  // Content Area
   contentContainer: {
-    flex: 1,
-    justifyContent: 'center',
+    paddingVertical: 40,
     alignItems: 'center',
-    paddingVertical: 60,
-    paddingHorizontal: 16,
   },
   emptyText: {
     fontSize: 16,
-    color: theme.colors.text.tertiary,
-    textAlign: 'center',
+    color: '#666666',
   },
 });
