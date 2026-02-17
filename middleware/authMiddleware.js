@@ -8,32 +8,11 @@ const supabase = require('../services/supabaseClient');
  */
 const verifyToken = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
+    // BYPASS LOGIN: Skip authentication for testing
+    req.user = { id: 'guest_user' };
+    req.uid = 'guest_user';
+    req.userId = 'guest_user';
     
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ error: 'Unauthorized: No token provided' });
-    }
-
-    const token = authHeader.split(' ')[1];
-    
-    // Verify token with Supabase
-    const { data: { user }, error } = await supabase.auth.getUser(token);
-    
-    if (error || !user) {
-      return res.status(403).json({ error: 'Unauthorized: Invalid token' });
-    }
-    
-    // Attach user info to request
-    req.user = user;
-    req.uid = user.id; // Supabase user ID
-
-    // Fetch MongoDB user and attach
-    const dbUser = await DatabaseService.findUserBySupabaseId(req.uid);
-    if (dbUser) {
-      req.dbUser = dbUser;
-      req.userId = dbUser._id.toString();
-    }
-
     next();
   } catch (error) {
     console.error('Token Verification Error:', error.message);

@@ -3,12 +3,12 @@ import { createClient } from '@supabase/supabase-js';
 import 'react-native-url-polyfill/auto';
 import Constants from 'expo-constants';
 
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '';
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || 'https://dummy.supabase.co';
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'dummy-key';
 
 console.log('🔗 Supabase URL:', supabaseUrl);
-console.log('🔐 Using REAL Supabase Auth - No Mock Authentication!');
-console.log('✅ Supabase Connection Successful - Real Credentials Loaded!');
+console.log('🔐 Using DUMMY Supabase Auth - Bypassed for testing!');
+console.log('✅ Supabase Connection bypassed - No real credentials needed!');
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 

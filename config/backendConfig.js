@@ -1,5 +1,5 @@
 // ==================== BACKEND CONFIGURATION ====================
-// Node.js compatible configuration for Railway deployment
+// Node.js compatible configuration for production deployment
 // All environment variables centralized here
 
 // ==================== BUNNY CDN CONFIGURATION ====================

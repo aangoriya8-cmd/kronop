@@ -601,15 +601,15 @@ const server = app.listen(PORT, HOST, async () => {
   
   try {
     await waitForMongoDB();
-    const ScalingOrchestrator = require('./services/scalingOrchestrator');
-    await ScalingOrchestrator.initializeScalingSystem(server);
-    console.log('🚀 Scaling System Active - Ready for 50,000 Users!');
+    // ScalingOrchestrator removed
+  console.log('🔄 ScalingOrchestrator service removed');
   } catch (error) {
     console.error('❌ Scaling System Failed:', error.message);
   }
   
-  RealtimeService.initialize(server);
-  setInterval(() => RealtimeService.pingAllClients(), 30000);
+  // RealtimeService.initialize(server); // Service removed
+  // setInterval(() => RealtimeService.pingAllClients(), 30000); // Service removed
+  console.log('🔄 RealtimeService removed');
 });
 
 // Delete endpoints for cleanup
@@ -707,19 +707,19 @@ mongoose.connection.once('open', () => {
     console.log('[WEBSOCKET]: Change Stream setup complete');
   }
   
-  // Auto-Sync Scheduler
-  console.log('🔄 Initializing Auto-Sync Scheduler...');
-  autoSyncIntegration.initialize()
-    .then((success) => {
-      if (success) {
-        console.log('✅ Auto-Sync Scheduler started successfully!');
-        console.log('📅 Background sync will run every minute');
-        console.log('🔗 BunnyCDN ↔ MongoDB sync active');
-      } else {
-        console.log('❌ Failed to start Auto-Sync Scheduler');
-      }
-    })
-    .catch((error) => console.error('❌ Auto-Sync initialization error:', error));
+  // Auto-Sync Scheduler - Service removed
+  console.log('🔄 Auto-Sync Scheduler service removed');
+  // autoSyncIntegration.initialize()
+  //   .then((success) => {
+  //     if (success) {
+  //       console.log('✅ Auto-Sync Scheduler started successfully!');
+  //       console.log('📅 Background sync will run every minute');
+  //       console.log('🔗 BunnyCDN ↔ MongoDB sync active');
+  //     } else {
+  //       console.log('❌ Failed to start Auto-Sync Scheduler');
+  //     }
+  //   })
+  //   .catch((error) => console.error('❌ Auto-Sync initialization error:', error));
 });
 
 global.broadcastToClients = broadcast;

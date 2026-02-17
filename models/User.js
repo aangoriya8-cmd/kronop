@@ -102,7 +102,7 @@ const userSchema = new mongoose.Schema({
 
 // Add indexes for better search performance
 userSchema.index({ username: 'text', displayName: 'text', bio: 'text' });
-userSchema.index({ username: 1 });
+// userSchema.index({ username: 1 }); // Removed - already defined as unique in schema
 userSchema.index({ displayName: 1 });
 userSchema.index({ createdAt: -1 });
 
