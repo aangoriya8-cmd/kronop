@@ -238,7 +238,7 @@ router.get('/test', async (req, res) => {
       timestamp: new Date().toISOString(),
       method: 'GET',
       serverInfo: {
-        platform: 'Koyeb Ready',
+        platform: 'Render Ready',
         mongodb: 'Connected',
         cors: 'Enabled',
         upload: 'Public Mode'
@@ -268,7 +268,7 @@ router.post('/test', async (req, res) => {
       method: 'POST',
       requestReceived: req.body,
       serverInfo: {
-        platform: 'Koyeb Ready',
+        platform: 'Render Ready',
         mongodb: 'Connected',
         cors: 'Enabled',
         upload: 'Public Mode'

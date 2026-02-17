@@ -1,7 +1,7 @@
 import { Alert } from 'react-native';
 
 // API base URL - using environment variable or fallback
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://common-jesse-kronop-app-19cf0acc.koyeb.app';
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || process.env.EXPO_PUBLIC_API_URL || 'https://kronop-9gju.onrender.com';
 
 // Current user ID (for now using guest user, later will be from auth)
 const CURRENT_USER_ID = 'guest_user';

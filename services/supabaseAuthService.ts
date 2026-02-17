@@ -3,8 +3,8 @@ import { createClient } from '@supabase/supabase-js';
 import 'react-native-url-polyfill/auto';
 import Constants from 'expo-constants';
 
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || '';
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || '';
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || '';
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || '';
 
 console.log('🔗 Supabase URL:', supabaseUrl);
 console.log('🔐 Using REAL Supabase Auth - No Mock Authentication!');
@@ -117,7 +117,7 @@ export class SupabaseAuthService {
 
   static async syncUserWithServer(user: any) {
     try {
-      const response = await fetch(`${process.env.KOYEB_API_URL || process.env.EXPO_PUBLIC_API_URL}/api/users/sync`, {
+      const response = await fetch(`${process.env.EXPO_PUBLIC_API_BASE_URL || process.env.EXPO_PUBLIC_API_URL || 'https://kronop-9gju.onrender.com'}/api/users/sync`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

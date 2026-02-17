@@ -1,19 +1,20 @@
 // Global API Configuration for Kronop App
-// Updated for Koyeb Deployment
+// Updated for Render Deployment
 
 // Get base URL from environment
 const getBaseUrl = () => {
-  // Check for Koyeb URL first (priority)
-  if (process.env.KOYEB_API_URL) {
-    return process.env.KOYEB_API_URL;
+  // Check for Render URL first (priority)
+  if (process.env.EXPO_PUBLIC_API_BASE_URL) {
+    return process.env.EXPO_PUBLIC_API_BASE_URL;
   }
   
-  // Fallback to environment variable (server-side)
+  // Check for secondary API URL
   if (typeof process !== 'undefined' && process.env.EXPO_PUBLIC_API_URL) {
     return process.env.EXPO_PUBLIC_API_URL;
   }
 
-  throw new Error('KOYEB_API_URL environment variable is required');
+  // Fallback to Render URL
+  return 'https://kronop-9gju.onrender.com';
 };
 
 export const BASE_URL = getBaseUrl();

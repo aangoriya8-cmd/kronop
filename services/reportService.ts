@@ -8,7 +8,7 @@ interface ReportData {
 }
 
 class ReportService {
-  private API_BASE = 'https://common-jesse-kronop-app-19cf0acc.koyeb.app';
+  private API_BASE = process.env.EXPO_PUBLIC_API_BASE_URL || process.env.EXPO_PUBLIC_API_URL || 'https://kronop-9gju.onrender.com';
   private STORAGE_KEY = 'report_data';
 
   /**

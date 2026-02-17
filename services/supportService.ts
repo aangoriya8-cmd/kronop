@@ -13,7 +13,7 @@ export interface SupportData {
 
 class SupportService {
   private readonly STORAGE_KEY = 'support_data';
-  private readonly API_BASE = process.env.EXPO_PUBLIC_API_URL || 'https://common-jesse-kronop-app-19cf0acc.koyeb.app';
+  private readonly API_BASE = process.env.EXPO_PUBLIC_API_BASE_URL || process.env.EXPO_PUBLIC_API_URL || 'https://kronop-9gju.onrender.com';
 
   /**
    * Toggle support for a reel

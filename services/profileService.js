@@ -1,7 +1,7 @@
 // Clean Profile Service - Only Core Functions
 // Direct connection to BASE_URL from .env
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || process.env.KOYEB_API_URL || 'https://common-jesse-kronop-app-19cf0acc.koyeb.app';
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || process.env.EXPO_PUBLIC_API_URL || 'https://kronop-9gju.onrender.com';
 const CURRENT_USER_ID = 'guest_user';
 
 class ProfileService {

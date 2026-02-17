@@ -7,14 +7,14 @@ require('dotenv').config();
 const axios = require('axios');
 
 // Get base URL from environment
-const BASE_URL = process.env.KOYEB_API_URL || process.env.EXPO_PUBLIC_API_URL || 'http://localhost:10000';
+const BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || process.env.EXPO_PUBLIC_API_URL || 'https://kronop-9gju.onrender.com';
 const API_BASE = BASE_URL.endsWith('/api') ? BASE_URL : `${BASE_URL}/api`;
 
 console.log('🧪 Testing Kronop APIs at:', API_BASE);
 console.log('📝 Using Environment Configuration:');
 console.log('   MongoDB:', process.env.MONGODB_URI ? '✅ Connected' : '❌ Missing');
 console.log('   BunnyCDN:', process.env.EXPO_PUBLIC_BUNNY_API_KEY ? '✅ Configured' : '❌ Missing');
-console.log('   Supabase:', process.env.SUPABASE_URL ? '✅ Configured' : '❌ Missing');
+console.log('   Supabase:', process.env.EXPO_PUBLIC_SUPABASE_URL ? '✅ Configured' : '❌ Missing');
 console.log('   OneSignal:', process.env.EXPO_PUBLIC_ONESIGNAL_APP_ID ? '✅ Configured' : '❌ Missing');
 console.log('');
 
@@ -146,7 +146,7 @@ async function runTests() {
   console.log(`📊 MongoDB: ${process.env.MONGODB_URI ? '✅ Configured' : '❌ Missing'}`);
   console.log(`🐰 BunnyCDN API Key: ${process.env.EXPO_PUBLIC_BUNNY_API_KEY ? '✅ Configured' : '❌ Missing'}`);
   console.log(`📹 BunnyCDN Libraries: ${process.env.EXPO_PUBLIC_BUNNY_LIBRARY_ID_VIDEO ? '✅ Configured' : '❌ Missing'}`);
-  console.log(`🗄️ Supabase: ${process.env.SUPABASE_URL ? '✅ Configured' : '❌ Missing'}`);
+  console.log(`🗄️ Supabase: ${process.env.EXPO_PUBLIC_SUPABASE_URL ? '✅ Configured' : '❌ Missing'}`);
   console.log(`🔔 OneSignal: ${process.env.EXPO_PUBLIC_ONESIGNAL_APP_ID ? '✅ Configured' : '❌ Missing'}`);
   console.log(`🤖 Groq AI: ${process.env.EXPO_PUBLIC_GROQ_API_KEY ? '✅ Configured' : '❌ Missing'}`);
   console.log(`🔍 Google Search: ${process.env.EXPO_PUBLIC_GOOGLE_SEARCH_KEY ? '✅ Configured' : '❌ Missing'}`);

@@ -43,7 +43,7 @@ export const API_KEYS = {
   MONGODB_URI: process.env.MONGODB_URI || '',
   
   // KRONOP BACKEND URL - SINGLE SOURCE OF TRUTH
-  KRONOP_API_URL: process.env.EXPO_PUBLIC_API_URL || process.env.KOYEB_API_URL || 'https://common-jesse-kronop-app-19cf0acc.koyeb.app',
+  KRONOP_API_URL: process.env.EXPO_PUBLIC_API_BASE_URL || process.env.EXPO_PUBLIC_API_URL || 'https://kronop-9gju.onrender.com',
 };
 
 // Type definitions for better TypeScript support

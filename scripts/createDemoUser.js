@@ -17,14 +17,12 @@ const demoUserData = {
 
 async function createDemoUser() {
   try {
-    // Connect to MongoDB - try multiple possible URIs
+    // Connect to MongoDB - ONLY ENVIRONMENT VARIABLES
     const MONGODB_URI = process.env.MONGODB_URI || 
-                       process.env.EXPO_PUBLIC_MONGODB_URI ||
-                       'mongodb://localhost:27017/kronop' ||
-                       'mongodb+srv://kronop:kronop123@cluster0.mongodb.net/kronop?retryWrites=true&w=majority';
+                       process.env.EXPO_PUBLIC_MONGODB_URI;
     
     console.log('🔗 Connecting to MongoDB...');
-    console.log(`📍 URI: ${MONGODB_URI.replace(/\/\/.*@/, '//***:***@')}`); // Hide credentials
+    console.log(`📍 URI: ${MONGODB_URI}`); // Removed hardcoded MongoDB URLs
 
     await mongoose.connect(MONGODB_URI);
     console.log('✅ Connected to MongoDB');

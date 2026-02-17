@@ -54,8 +54,8 @@ const API_KEYS = {
   OPENVERSE: process.env.EXPO_PUBLIC_OPENVERSE_KEY,
   
   // Auth & Services
-  SUPABASE_URL: process.env.SUPABASE_URL,
-  SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY,
+  SUPABASE_URL: process.env.EXPO_PUBLIC_SUPABASE_URL,
+  SUPABASE_ANON_KEY: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
   ONESIGNAL_APP_ID: process.env.EXPO_PUBLIC_ONESIGNAL_APP_ID,
   ONESIGNAL_REST_API_KEY: process.env.ONESIGNAL_REST_API_KEY,
   GOOGLE_WEB_CLIENT_ID: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
@@ -72,7 +72,7 @@ const DATABASE_CONFIG = {
 const SERVER_CONFIG = {
   PORT: Number(process.env.PORT) || 8000,
   NODE_ENV: process.env.NODE_ENV || 'development',
-  API_BASE_URL: process.env.KOYEB_API_URL || process.env.EXPO_PUBLIC_API_URL
+  API_BASE_URL: process.env.EXPO_PUBLIC_API_BASE_URL || process.env.EXPO_PUBLIC_API_URL || 'https://kronop-9gju.onrender.com'
 };
 
 // ==================== HELPER FUNCTIONS ====================

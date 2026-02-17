@@ -6,8 +6,8 @@ const express = require('express');
 const router = express.Router();
 const MongoClient = require('mongodb').MongoClient;
 
-// MongoDB Connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017';
+// MongoDB Connection - ONLY ENVIRONMENT VARIABLES
+const MONGODB_URI = process.env.MONGODB_URI;
 const DB_NAME = process.env.DB_NAME || 'kronop';
 
 let db;

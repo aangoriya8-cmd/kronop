@@ -3,8 +3,10 @@
 // Only used for login/logout, not for data operations
 
 import { createClient } from '@supabase/supabase-js';
-import { API_KEYS } from '../constants/Config';
 
-const supabase = createClient(API_KEYS.SUPABASE_URL || '', API_KEYS.SUPABASE_ANON_KEY || '');
+const supabase = createClient(
+  process.env.EXPO_PUBLIC_SUPABASE_URL || '',
+  process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || ''
+);
 
 export default supabase;

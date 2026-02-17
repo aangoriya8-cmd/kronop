@@ -110,7 +110,7 @@ if (!MONGO_URI) {
 }
 
 // Health check endpoints
-app.get('/koyeb/health', async (req, res) => {
+app.get('/render/health', async (req, res) => {
   try {
     const dbConnected = mongoose.connection && mongoose.connection.readyState === 1;
     const mongoUri = process.env.MONGODB_URI || process.env.EXPO_PUBLIC_MONGODB_URI;
@@ -118,7 +118,7 @@ app.get('/koyeb/health', async (req, res) => {
     res.status(dbConnected ? 200 : 503).json({
       status: dbConnected ? 'healthy' : 'unhealthy',
       timestamp: new Date().toISOString(),
-      platform: 'Koyeb',
+      platform: 'Render',
       database: { connected: dbConnected, uriSet: !!mongoUri }
     });
   } catch (error) {

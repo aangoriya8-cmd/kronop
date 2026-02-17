@@ -127,7 +127,7 @@ export const KRONOP_KNOWLEDGE_BASE = {
   apiEndpoints: {
     baseUrl: {
       development: "http://0.0.0.0:3000",
-      production: "https://common-jesse-kronop-app-19cf0acc.koyeb.app"
+      production: "https://kronop-9gju.onrender.com"
     },
     content: {
       photos: {

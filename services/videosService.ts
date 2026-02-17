@@ -32,7 +32,7 @@ export interface VideoUploadResult {
  * Videos Service - Handles all Videos operations through REST API
  */
 export class VideosService {
-  private readonly API_BASE = process.env.EXPO_PUBLIC_API_URL || process.env.PRODUCTION_API_URL || 'http://localhost:3000';
+  private readonly API_BASE = process.env.EXPO_PUBLIC_API_BASE_URL || process.env.EXPO_PUBLIC_API_URL || 'https://kronop-9gju.onrender.com';
 
   /**
    * Create headers for API calls

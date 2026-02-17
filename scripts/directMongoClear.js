@@ -8,8 +8,8 @@ async function clearAllContent() {
   try {
     console.log('🔗 Connecting to MongoDB...');
     
-    // Connect to database
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/kronop');
+    // Connect to database - ONLY ENVIRONMENT VARIABLES
+    await mongoose.connect(process.env.MONGODB_URI);
     console.log('✅ Connected to MongoDB');
 
     // Clear all content

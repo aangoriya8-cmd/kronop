@@ -80,7 +80,7 @@ class UploadAPIManager {
       CLOUDINARY_API_KEY: process.env.EXPO_PUBLIC_CLOUDINARY_API_KEY || '',
       CLOUDINARY_API_SECRET: process.env.EXPO_PUBLIC_CLOUDINARY_API_SECRET || '',
       CLOUDINARY_UPLOAD_PRESET: process.env.EXPO_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'shayari_preset',
-      API_BASE_URL: process.env.EXPO_PUBLIC_API_BASE_URL || 'https://kronop-api.example.com'
+      API_BASE_URL: process.env.EXPO_PUBLIC_API_BASE_URL || 'https://kronop-9gju.onrender.com'
     };
   }
 
