@@ -38,7 +38,7 @@ requiredEnvVars.forEach(varName => {
 });
 
 // Check MongoDB URI format
-const mongoUri = process.env.MONGODB_URI || process.env.EXPO_PUBLIC_MONGODB_URI;
+const mongoUri = process.env.EXPO_PUBLIC_MONGODB_URI || process.env.MONGODB_URI;
 if (mongoUri) {
   console.log('\n📝 MongoDB URI Validation:');
   console.log(`✅ Format: ${mongoUri.startsWith('mongodb://') || mongoUri.startsWith('mongodb+srv://') ? 'Valid' : 'Invalid'}`);

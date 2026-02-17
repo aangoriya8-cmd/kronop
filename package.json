@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/package",
   "name": "kronop-app",
-  "main": "expo-router/entry",
+  "main": "server.js",
   "version": "1.0.0",
   "engines": {
     "node": ">=20.0.0",

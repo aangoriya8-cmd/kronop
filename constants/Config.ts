@@ -40,7 +40,7 @@ export const API_KEYS = {
   GOOGLE_ANDROID_CLIENT_ID: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID || '',
   
   // Database
-  MONGODB_URI: process.env.MONGODB_URI || '',
+  MONGODB_URI: process.env.MONGODB_URI || process.env.EXPO_PUBLIC_MONGODB_URI,
   
   // KRONOP BACKEND URL - SINGLE SOURCE OF TRUTH
   KRONOP_API_URL: process.env.EXPO_PUBLIC_API_BASE_URL || process.env.EXPO_PUBLIC_API_URL || 'https://kronop-9gju.onrender.com',

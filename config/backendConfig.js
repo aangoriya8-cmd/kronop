@@ -64,7 +64,7 @@ const API_KEYS = {
 
 // ==================== DATABASE CONFIGURATION ====================
 const DATABASE_CONFIG = {
-  MONGODB_URI: process.env.MONGODB_URI,
+  MONGODB_URI: process.env.MONGODB_URI || process.env.EXPO_PUBLIC_MONGODB_URI,
   REDIS_TTL_SECONDS: parseInt(process.env.REDIS_TTL_SECONDS || '30', 10)
 };
 

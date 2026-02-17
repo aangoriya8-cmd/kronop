@@ -13,7 +13,7 @@ const getRenderConfig = () => {
     NODE_ENV: process.env.NODE_ENV || 'production',
     
     // Database
-    MONGODB_URI: process.env.MONGODB_URI || '',
+    MONGODB_URI: process.env.MONGODB_URI || process.env.EXPO_PUBLIC_MONGODB_URI,
     
     // BunnyCDN Configuration
     BUNNY_API_KEY: process.env.EXPO_PUBLIC_BUNNY_API_KEY,
