@@ -10,27 +10,27 @@ const getBunnyConfigByType = (type) => {
   
   const configs = {
     reels: {
-      libraryId: process.env.EXPO_PUBLIC_BUNNY_LIBRARY_ID_REELS || process.env.BUNNY_LIBRARY_ID_REELS || '593793',
+      libraryId: process.env.EXPO_PUBLIC_BUNNY_LIBRARY_ID_REELS || process.env.BUNNY_LIBRARY_ID_REELS || '',
       host: process.env.EXPO_PUBLIC_BUNNY_HOST_REELS || process.env.BUNNY_HOST_REELS || '',
-      apiKey: 'cfa113db-233a-453d-ac580bde7245-1219-4537', // FIXED: Reels key
+      apiKey: process.env.EXPO_PUBLIC_BUNNY_API_KEY_REELS || process.env.EXPO_PUBLIC_BUNNY_API_KEY || '',
       streamKey: process.env.EXPO_PUBLIC_BUNNY_STREAM_KEY_REELS || process.env.BUNNY_STREAM_KEY_REELS || ''
     },
     video: {
-      libraryId: process.env.EXPO_PUBLIC_BUNNY_LIBRARY_ID_VIDEO || process.env.BUNNY_LIBRARY_ID_VIDEO || '593795',
+      libraryId: process.env.EXPO_PUBLIC_BUNNY_LIBRARY_ID_VIDEO || process.env.BUNNY_LIBRARY_ID_VIDEO || '',
       host: process.env.EXPO_PUBLIC_BUNNY_HOST_VIDEO || process.env.BUNNY_HOST_VIDEO || '',
-      apiKey: '916728d0-ae43-4d24-bbe6fc730ad6-bf51-4173', // FIXED: Video key
+      apiKey: process.env.EXPO_PUBLIC_BUNNY_API_KEY_VIDEO || process.env.EXPO_PUBLIC_BUNNY_API_KEY || '',
       streamKey: process.env.EXPO_PUBLIC_BUNNY_STREAM_KEY_VIDEO || process.env.BUNNY_STREAM_KEY_VIDEO || ''
     },
     live: {
-      libraryId: process.env.EXPO_PUBLIC_BUNNY_LIBRARY_ID_LIVE || process.env.BUNNY_LIBRARY_ID_LIVE || '594452',
+      libraryId: process.env.EXPO_PUBLIC_BUNNY_LIBRARY_ID_LIVE || process.env.BUNNY_LIBRARY_ID_LIVE || '',
       host: process.env.EXPO_PUBLIC_BUNNY_HOST_LIVE || process.env.BUNNY_HOST_LIVE || '',
-      apiKey: 'F16e101a-2087-46e4-9070-d9dd0b9b2c0931584ec4-6583-4e94-b615-c22781558f10', // FIXED: Live key from .env
+      apiKey: process.env.EXPO_PUBLIC_BUNNY_API_KEY_LIVE || process.env.EXPO_PUBLIC_BUNNY_API_KEY || '',
       streamKey: process.env.EXPO_PUBLIC_BUNNY_STREAM_KEY_LIVE || process.env.BUNNY_STREAM_KEY_LIVE || ''
     },
     photos: {
-      storageZoneName: process.env.EXPO_PUBLIC_BUNNY_STORAGE_NAME_PHOTO || process.env.BUNNY_STORAGE_ZONE || 'photu',
-      storageAccessKey: process.env.EXPO_PUBLIC_BUNNY_PHOTO_STORAGE_KEY || process.env.BUNNY_PHOTO_STORAGE_KEY || '2bc0776a-9613-4dde-8a24969bf858-e23e-4ab7', // FIXED: Photos storage key
-      host: process.env.EXPO_PUBLIC_BUNNY_STORAGE_HOST_PHOTO || process.env.BUNNY_HOST_PHOTOS || 'storage.bunnycdn.com'
+      storageZoneName: process.env.EXPO_PUBLIC_BUNNY_STORAGE_NAME_PHOTO || process.env.BUNNY_STORAGE_ZONE || '',
+      storageAccessKey: process.env.EXPO_PUBLIC_BUNNY_PHOTO_STORAGE_KEY || process.env.BUNNY_PHOTO_STORAGE_KEY || '',
+      host: process.env.EXPO_PUBLIC_BUNNY_STORAGE_HOST_PHOTO || process.env.BUNNY_HOST_PHOTOS || ''
     },
     shayari: {
       storageZoneName: process.env.EXPO_PUBLIC_BUNNY_STORAGE_NAME_SHAYARI || process.env.BUNNY_STORAGE_ZONE_SHAYARI || '',
@@ -38,9 +38,9 @@ const getBunnyConfigByType = (type) => {
       host: process.env.EXPO_PUBLIC_BUNNY_STORAGE_HOST_SHAYARI || process.env.BUNNY_HOST_SHAYARI || ''
     },
     story: {
-      libraryId: process.env.EXPO_PUBLIC_BUNNY_LIBRARY_ID_STORY || process.env.BUNNY_LIBRARY_ID_STORY || '593793',
+      libraryId: process.env.EXPO_PUBLIC_BUNNY_LIBRARY_ID_STORY || process.env.BUNNY_LIBRARY_ID_STORY || '',
       host: process.env.EXPO_PUBLIC_BUNNY_HOST_STORY || process.env.BUNNY_HOST_STORY || '',
-      apiKey: 'cfa113db-233a-453d-ac580bde7245-1219-4537', // FIXED: Same as reels (same library)
+      apiKey: process.env.EXPO_PUBLIC_BUNNY_API_KEY_STORY || process.env.EXPO_PUBLIC_BUNNY_API_KEY || '',
       streamKey: process.env.EXPO_PUBLIC_BUNNY_STREAM_KEY_STORY || process.env.BUNNY_STREAM_KEY_STORY || '',
       storageAccessKey: process.env.EXPO_PUBLIC_BUNNY_STORY_STORAGE_KEY || process.env.BUNNY_STORY_STORAGE_KEY || ''
     }
@@ -55,7 +55,9 @@ const getBunnyConfigByType = (type) => {
 const LIBRARY_ID_MAP = {
   reels: process.env.EXPO_PUBLIC_BUNNY_LIBRARY_ID_REELS || process.env.BUNNY_LIBRARY_ID_REELS || '',
   video: process.env.EXPO_PUBLIC_BUNNY_LIBRARY_ID_VIDEO || process.env.BUNNY_LIBRARY_ID_VIDEO || '',
-  live: process.env.EXPO_PUBLIC_BUNNY_LIBRARY_ID_LIVE || process.env.BUNNY_LIBRARY_ID_LIVE || ''
+  live: process.env.EXPO_PUBLIC_BUNNY_LIBRARY_ID_LIVE || process.env.BUNNY_LIBRARY_ID_LIVE || '',
+  photos: process.env.EXPO_PUBLIC_BUNNY_STORAGE_NAME_PHOTO || process.env.BUNNY_STORAGE_ZONE || '',
+  shayari: process.env.EXPO_PUBLIC_BUNNY_STORAGE_NAME_SHAYARI || process.env.BUNNY_STORAGE_ZONE_SHAYARI || ''
 };
 
 // API Headers Factory - Uses specific API key (NO MASTER KEY)
