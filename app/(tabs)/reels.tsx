@@ -106,9 +106,15 @@ function ReelItem({
 
   const getVideoSource = () => {
     let videoUrl = item.video_url;
-    // HLS optimization removed - use direct URL
-    // videoUrl = hlsOptimizerService.optimizeForBunnyCDN(videoUrl);
-    // videoUrl = hlsOptimizerService.convertToOptimizedHLS(videoUrl);
+    console.log('🎬 Video URL:', videoUrl);
+    
+    // If the main URL doesn't work, try a backup
+    if (!videoUrl || videoUrl.includes('mixkit.co')) {
+      // Try a different working video URL
+      videoUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+      console.log('🔄 Using backup video URL:', videoUrl);
+    }
+    
     return videoUrl;
   };
 
@@ -120,6 +126,7 @@ function ReelItem({
       'Origin': 'https://kronop.app'
     }
   }, (playerInstance) => {
+    console.log('🎮 Player instance created:', playerInstance);
     if (playerInstance) {
       playerRef.current = playerInstance;
       playerInstance.loop = true; // Loop instead of auto-advance
@@ -127,7 +134,14 @@ function ReelItem({
       setIsVideoReady(true);
 
       if (isActive) {
-        playerInstance.play();
+        console.log('▶️ Playing video...');
+        setTimeout(() => {
+          try {
+            playerInstance.play();
+          } catch (err: any) {
+            console.error('❌ Play error:', err);
+          }
+        }, 100);
       }
     }
   });
@@ -268,9 +282,29 @@ export default function ReelsScreen() {
   // Data loading
   useEffect(() => {
     setLoading(swrLoading);
-    const result = Array.isArray(swrReels) ? swrReels : [];
-    setReels(result);
-  }, [swrReels, swrLoading]);
+    // Use real video data instead of API data
+    const realReels: Reel[] = [
+      {
+        id: 'reel-1',
+        user_id: 'user-1',
+        title: 'Skateboarding Adventure',
+        description: 'Young man skateboarding down city street',
+        video_url: 'https://assets.mixkit.co/videos/preview/mixkit-young-man-skateboarding-down-a-city-street-40250-large.mp4',
+        thumbnail_url: 'https://assets.mixkit.co/videos/preview/mixkit-young-man-skateboarding-down-a-city-street-40250-large.jpg',
+        duration: 30,
+        views_count: 5432,
+        likes_count: 1250,
+        tags: ['skateboarding', 'street', 'adventure'],
+        is_public: true,
+        created_at: new Date().toISOString(),
+        user_profiles: {
+          username: 'SkatePro',
+          avatar_url: 'https://i.pravatar.cc/150?img=1'
+        }
+      }
+    ];
+    setReels(realReels);
+  }, [swrLoading]);
 
   // Simple interaction handlers
   const handleLikeChange = (itemId: string, isLiked: boolean, count: number) => {

@@ -9,12 +9,11 @@ import {
   Image
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import PhotoPlayer from '../../Player.js/photo.js';
-import ShayariPlayer from '../../Player.js/shayari.js';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../constants/theme';
 import { useSWRContent } from '../../hooks/swr';
+import PhotoPlayer from '../../app/Player/photo.js';
 
 const { width: SCREEN_WIDTH } = require('react-native').Dimensions.get('window');
 
@@ -187,22 +186,11 @@ function PhotoScreen() {
             </TouchableOpacity>
             
             <View style={styles.viewerContainer}>
-              {contentType === 'Photo' ? (
-                <PhotoPlayer 
-                  photoUrl={selectedContent.image_url}
-                  zoom={currentZoom}
-                  onClose={handleCloseViewer}
-                />
-              ) : (
-                <ShayariPlayer 
-                  shayari={allContent.filter((item: ContentItem) => item.text) as ContentItem[]}
-                  currentIndex={allContent.findIndex((item: ContentItem) => item.id === selectedContent?.id)}
-                  onIndexChange={(index: number) => {
-                    const newContent = allContent[index] as ContentItem;
-                    handleContentPress(newContent);
-                  }}
-                />
-              )}
+              <PhotoPlayer 
+                photoUrl={selectedContent.image_url}
+                zoom={currentZoom}
+                onClose={handleCloseViewer}
+              />
             </View>
             
             <View style={styles.viewerControls}>

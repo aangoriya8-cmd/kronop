@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { theme } from '../../constants/theme';
-import { reelsApi, photosApi, videosApi, shayariPhotosApi } from '../../services/api';
+import { reelsApi, photosApi, videosApi } from '../../services/api';
 
 const { width, height } = Dimensions.get('window');
 
@@ -74,22 +74,20 @@ export default function ContentListWindow({ visible, onClose, contentType = 'all
           data = Array.isArray(videosData) ? videosData : [];
           break;
         case 'shayari':
-          const shayariData = await shayariPhotosApi.getUserShayariPhotos();
-          data = Array.isArray(shayariData) ? shayariData : [];
+          data = [];
           break;
         case 'all':
           // Load all content types
-          const [reels, photos, videos, shayari] = await Promise.all([
+          const [reels, photos, videos] = await Promise.all([
             reelsApi.getUserReels().catch(() => []),
             photosApi.getUserPhotos().catch(() => []),
             videosApi.getUserVideos().catch(() => []),
-            shayariPhotosApi.getUserShayariPhotos().catch(() => [])
+            Promise.resolve([])
           ]);
           data = [
             ...(Array.isArray(reels) ? reels.map(item => ({ ...item, type: 'reel' })) : []),
             ...(Array.isArray(photos) ? photos.map(item => ({ ...item, type: 'photo' })) : []),
-            ...(Array.isArray(videos) ? videos.map(item => ({ ...item, type: 'video' })) : []),
-            ...(Array.isArray(shayari) ? shayari.map(item => ({ ...item, type: 'shayari' })) : [])
+            ...(Array.isArray(videos) ? videos.map(item => ({ ...item, type: 'video' })) : [])
           ];
           break;
       }

@@ -2,7 +2,8 @@ import { Tabs } from 'expo-router';
 import { Platform, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../constants/theme';
-import { Home, Sparkles, Youtube, Radio, Layers, Wifi, User } from 'lucide-react-native';
+import { Home, Sparkles, Youtube, Layers, User } from 'lucide-react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
@@ -79,7 +80,7 @@ export default function TabLayout() {
           name="live"
           options={{
             title: 'Live',
-            tabBarIcon: ({ color }) => <Radio size={26} color={color} strokeWidth={2} />,
+            tabBarIcon: ({ color }) => <Ionicons name="radio" size={26} color={color} />,
           }}
         />
         <Tabs.Screen
@@ -94,6 +95,13 @@ export default function TabLayout() {
           options={{
             title: 'Profile',
             tabBarIcon: ({ color }) => <User size={24} color={color} strokeWidth={2} />,
+          }}
+        />
+        <Tabs.Screen
+          name="settings"
+          options={{
+            title: 'Settings',
+            tabBarIcon: ({ color }) => <Ionicons name="settings" size={24} color={color} />,
           }}
         />
       </Tabs>

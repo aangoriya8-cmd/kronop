@@ -1,7 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Image } from 'expo-image';
-import { theme } from '../../constants/theme';
+import { TouchableOpacity, View, Text, Image, StyleSheet } from 'react-native';
 
 interface ChannelInfoProps {
   avatarUrl: string;
@@ -11,41 +9,46 @@ interface ChannelInfoProps {
 
 export default function ChannelInfo({ avatarUrl, channelName, onPress }: ChannelInfoProps) {
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
-      <View style={styles.avatarContainer}>
-        <Image source={{ uri: avatarUrl }} style={styles.avatar} contentFit="cover" transition={200} />
+    <TouchableOpacity 
+      style={styles.channelInfo}
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
+      <Image 
+        source={{ uri: avatarUrl }} 
+        style={styles.avatar}
+      />
+      <View style={styles.channelDetails}>
+        <Text style={styles.channelName}>{channelName}</Text>
       </View>
-      <Text style={styles.channelName} numberOfLines={1}>
-        {channelName}
-      </Text>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  channelInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    flexShrink: 1,
-  },
-  avatarContainer: {
-    marginRight: 10,
+    flex: 1,
   },
   avatar: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    borderWidth: 2,
-    borderColor: theme.colors.text.primary,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  channelDetails: {
+    marginLeft: 8,
+    flex: 1,
   },
   channelName: {
-    color: theme.colors.text.primary,
-    fontSize: 16,
-    fontWeight: 'bold',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 3,
-    flexShrink: 1,
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '600',
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
 });
-

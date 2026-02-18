@@ -11,7 +11,6 @@ export { default as RunningTitle } from './RunningTitle';
 export { default as SupportSection } from './SupportSection';
 export { default as ChannelInfo } from './ChannelInfo';
 export { StorySection } from './StorySection';
-export { default as Shayari } from './Shayari';
 
 // New Modular Components for Zero Lag Performance
 export { LikeButton } from './LikeButton';

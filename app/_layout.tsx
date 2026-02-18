@@ -7,8 +7,8 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
 import { AlertProvider } from '../template/ui';
-
 import { AuthProvider } from '../template';
+import { GhostStealthProvider } from '../context/GhostStealthContext';
 
 import StatusBarOverlay from '../components/common/StatusBarOverlay';
 
@@ -37,6 +37,8 @@ export default function RootLayout() {
 
         <AuthProvider>
 
+          <GhostStealthProvider>
+
           <Stack 
 
             screenOptions={{ 
@@ -56,8 +58,6 @@ export default function RootLayout() {
                 <Stack.Screen name="(tabs)" />
 
                 <Stack.Screen name="login" />
-
-                <Stack.Screen name="settings" />
 
                 <Stack.Screen name="edit-profile" />
 
@@ -136,6 +136,8 @@ export default function RootLayout() {
                 />
 
               </Stack>
+
+          </GhostStealthProvider>
 
         </AuthProvider>
 

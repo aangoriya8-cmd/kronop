@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import profileService from '../../services/profileService.js';
 
 const mockUserData = {
@@ -29,6 +30,7 @@ const mockUserData = {
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const [userData, setUserData] = useState(mockUserData);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('video');
@@ -45,8 +47,8 @@ export default function ProfileScreen() {
     { id: 'reels', label: 'Reels' },
     { id: 'photo', label: 'Photo' },
     { id: 'live', label: 'Live' },
-    { id: 'shayari', label: 'Shayari' },
-    { id: 'songs', label: 'Songs' }
+    { id: 'songs', label: 'Songs' },
+    { id: 'save', label: 'Save' }
   ];
 
   useEffect(() => {
@@ -108,6 +110,10 @@ export default function ProfileScreen() {
     Alert.alert('Share Profile', 'Profile share functionality coming soon!');
   };
 
+  const handleSettingsPress = () => {
+    router.push('/settings');
+  };
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 'video':
@@ -134,16 +140,16 @@ export default function ProfileScreen() {
             <Text style={styles.emptyText}>No live streams yet</Text>
           </View>
         );
-      case 'shayari':
-        return (
-          <View style={styles.contentContainer}>
-            <Text style={styles.emptyText}>No shayari yet</Text>
-          </View>
-        );
       case 'songs':
         return (
           <View style={styles.contentContainer}>
             <Text style={styles.emptyText}>No songs yet</Text>
+          </View>
+        );
+      case 'save':
+        return (
+          <View style={styles.contentContainer}>
+            <Text style={styles.emptyText}>No saved items yet</Text>
           </View>
         );
       default:
@@ -168,12 +174,8 @@ export default function ProfileScreen() {
           <Text style={styles.username}>Your Profile</Text>
         </View>
         <View style={styles.headerRight}>
-          <Image 
-            source={{ uri: 'https://picsum.photos/32/32?random=logo' }} 
-            style={styles.logo}
-          />
           <TouchableOpacity style={styles.iconButton}>
-            <Ionicons name="settings-outline" size={20} color="#000" />
+            <Ionicons name="leaf" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
       </View>

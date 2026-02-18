@@ -5,7 +5,6 @@ import {
   StyleSheet,
   Dimensions,
   ActivityIndicator,
-  Alert,
   TouchableOpacity
 } from 'react-native';
 import Animated, { useAnimatedRef, useSharedValue ,
@@ -14,16 +13,10 @@ import Animated, { useAnimatedRef, useSharedValue ,
   withSpring,
   runOnJS,
 } from 'react-native-reanimated';
-import { Video, ResizeMode, Audio } from 'expo-av';
+import { Video, ResizeMode } from 'expo-av';
 import { PanGestureHandler, GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { MaterialIcons } from '@expo/vector-icons';
-import Marquee from 'react-native-marquee';
-import VideoErrorBoundary from '../common/VideoErrorBoundary';
-import MarqueeText from '../common/MarqueeText';
-import { ZeroDataVideoCacheService } from '../../services/zeroDataVideoCacheService';
-import { LocalVideoProxyServer } from '../../services/localVideoProxyServer';
-import { videoPreloaderService } from '../../services/videoPreloader';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 const REEL_HEIGHT = SCREEN_HEIGHT;

@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { SupporterButton } from './SupporterButton';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 interface SupportSectionProps {
   itemId: string;
@@ -9,22 +9,50 @@ interface SupportSectionProps {
 }
 
 export default function SupportSection({ itemId, isSupported, onSupportChange }: SupportSectionProps) {
+  const handleSupportPress = () => {
+    onSupportChange(itemId, !isSupported);
+  };
+
   return (
-    <View style={styles.container}>
-      <SupporterButton
-        itemId={itemId}
-        isInitiallySupported={isSupported}
-        onSupportChange={(id, nextSupported) => onSupportChange(id, nextSupported)}
-        size="small"
-        showCount={false}
+    <TouchableOpacity 
+      style={[styles.supportButton, isSupported && styles.supportButtonActive]}
+      onPress={handleSupportPress}
+      activeOpacity={0.7}
+    >
+      <MaterialIcons 
+        name="favorite" 
+        size={16} 
+        color={isSupported ? '#FF1744' : '#FFFFFF'} 
       />
-    </View>
+      <Text style={[styles.supportText, isSupported && styles.supportTextActive]}>
+        Support
+      </Text>
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexShrink: 0,
+  supportButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  supportButtonActive: {
+    backgroundColor: 'rgba(255, 23, 68, 0.2)',
+    borderColor: '#FF1744',
+  },
+  supportText: {
+    color: '#FFFFFF',
+    fontSize: 11,
+    fontWeight: '600',
+    marginLeft: 4,
+  },
+  supportTextActive: {
+    color: '#FF1744',
   },
 });
-
