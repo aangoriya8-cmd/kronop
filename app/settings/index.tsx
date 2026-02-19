@@ -24,7 +24,6 @@ const settingsData: SettingItem[] = [
   { id: 'InAppTranslator', name: 'In App Translator', icon: 'translate', enabled: false },
   { id: 'Language', name: 'Language', icon: 'language', enabled: false },
   { id: 'LinkedDevices', name: 'Linked Devices', icon: 'devices', enabled: false },
-  { id: 'Logout', name: 'Logout', icon: 'logout', enabled: false },
   { id: 'Notifications', name: 'Notifications', icon: 'notifications-active', enabled: false },
   { id: 'OfflineVault', name: 'Offline Vault', icon: 'lock', enabled: false },
   { id: 'Profile', name: 'Profile', icon: 'person', enabled: false },
@@ -33,6 +32,7 @@ const settingsData: SettingItem[] = [
   { id: 'SelfDestructChats', name: 'Self Destruct Chats', icon: 'timer-off', enabled: false },
   { id: 'ShakeToReport', name: 'Shake To Report', icon: 'report-problem', enabled: false },
   { id: 'StorageManager', name: 'Storage Manager', icon: 'storage', enabled: false },
+  { id: 'Logout', name: 'Logout', icon: 'logout', enabled: false },
   { id: 'DeleteAccount', name: 'Delete Account', icon: 'delete', enabled: false },
 ];
 
@@ -63,12 +63,14 @@ export default function SettingsScreen() {
     >
       <View style={styles.settingLeft}>
         <View style={styles.iconContainer}>
-          <MaterialIcons name={setting.icon as any} size={24} color="#FFFFFF" />
+          <MaterialIcons name={setting.icon as any} size={20} color="#FFFFFF" />
         </View>
         <Text style={styles.settingName}>{setting.name}</Text>
       </View>
       
-      {setting.id !== 'Logout' && setting.id !== 'DeleteAccount' ? (
+      {setting.id === 'Logout' || setting.id === 'DeleteAccount' ? (
+        <MaterialIcons name="chevron-right" size={20} color="#666666" />
+      ) : (
         <TouchableOpacity 
           style={[styles.toggleButton, setting.enabled && styles.toggleButtonEnabled]}
           onPress={() => toggleSetting(setting.id)}
@@ -76,8 +78,6 @@ export default function SettingsScreen() {
         >
           <View style={[styles.toggleCircle, setting.enabled && styles.toggleCircleEnabled]} />
         </TouchableOpacity>
-      ) : (
-        <MaterialIcons name="chevron-right" size={24} color="#666666" />
       )}
     </TouchableOpacity>
   );
@@ -123,11 +123,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 16,
-    paddingHorizontal: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 12,
     backgroundColor: '#1A1A1A',
-    borderRadius: 12,
-    marginBottom: 12,
+    borderRadius: 10,
+    marginBottom: 8,
   },
   settingLeft: {
     flexDirection: 'row',
@@ -135,24 +135,24 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: '#2A2A2A',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: 10,
   },
   settingName: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '500',
     color: '#FFFFFF',
     flex: 1,
   },
   toggleButton: {
-    width: 48,
-    height: 28,
-    borderRadius: 14,
+    width: 40,
+    height: 24,
+    borderRadius: 12,
     backgroundColor: '#333333',
     justifyContent: 'center',
     paddingHorizontal: 2,
@@ -161,9 +161,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#8B00FF',
   },
   toggleCircle: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
     backgroundColor: '#FFFFFF',
   },
   toggleCircleEnabled: {

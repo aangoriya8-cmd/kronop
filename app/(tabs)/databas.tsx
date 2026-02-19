@@ -9,23 +9,11 @@ import {
   RefreshControl,
   Alert,
 } from 'react-native';
+
 import { SafeScreen } from '../../components/layout/SafeScreen';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { theme } from '../../constants/theme';
-import { reelsApi , videosApi , photosApi , liveApi , storiesApi } from '../../services/api';
-
-// Shayari Photos API
-const shayariPhotosApi = {
-  getShayariPhotos: async () => {
-    try {
-      const response = await fetch(`${process.env.KOYEB_API_URL || process.env.EXPO_PUBLIC_API_URL}/content/shayari-photos`);
-      return response.json();
-    } catch (error) {
-      console.error('Error:', error);
-      return { data: [] };
-    }
-  }
-};
+import { useRouter } from 'expo-router';
 
 interface ContentStats {
   total: number;
@@ -45,12 +33,13 @@ interface TotalData {
 
 interface SectionData {
   name: string;
+  screen: string;
   icon: string;
   stats: ContentStats;
-  expanded: boolean;
 }
 
 export default function UserDataScreen() {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   
@@ -63,12 +52,12 @@ export default function UserDataScreen() {
   });
   
   const [sections, setSections] = useState<SectionData[]>([
-    { name: 'Video Tool', icon: 'videocam', stats: { total: 0, stars: 0, comments: 0, shares: 0, views: 0 }, expanded: false },
-    { name: 'Reels Tool', icon: 'movie', stats: { total: 0, stars: 0, comments: 0, shares: 0, views: 0 }, expanded: false },
-    { name: 'Photo Tool', icon: 'photo', stats: { total: 0, stars: 0, comments: 0, shares: 0, views: 0 }, expanded: false },
-    { name: 'Story Tool', icon: 'auto-stories', stats: { total: 0, stars: 0, comments: 0, shares: 0, views: 0 }, expanded: false },
-    { name: 'Live Tool', icon: 'live-tv', stats: { total: 0, stars: 0, comments: 0, shares: 0, views: 0 }, expanded: false },
-    { name: 'Song Tool', icon: 'music-note', stats: { total: 0, stars: 0, comments: 0, shares: 0, views: 0 }, expanded: false },
+    { name: 'Video Tool', screen: 'VideoTool', icon: 'videocam', stats: { total: 0, stars: 0, comments: 0, shares: 0, views: 0 } },
+    { name: 'Reels Tool', screen: 'ReelsTool', icon: 'movie', stats: { total: 0, stars: 0, comments: 0, shares: 0, views: 0 } },
+    { name: 'Photo Tool', screen: 'PhotoTool', icon: 'photo', stats: { total: 0, stars: 0, comments: 0, shares: 0, views: 0 } },
+    { name: 'Story Tool', screen: 'StoryTool', icon: 'auto-stories', stats: { total: 0, stars: 0, comments: 0, shares: 0, views: 0 } },
+    { name: 'Live Tool', screen: 'LiveTool', icon: 'live-tv', stats: { total: 0, stars: 0, comments: 0, shares: 0, views: 0 } },
+    { name: 'Song Tool', screen: 'SongTool', icon: 'music-note', stats: { total: 0, stars: 0, comments: 0, shares: 0, views: 0 } },
   ]);
 
   useEffect(() => {
@@ -85,41 +74,20 @@ export default function UserDataScreen() {
     try {
       setLoading(true);
       
-      const [reelsData, videosData, photosData, liveData, storiesData, shayariPhotosData] = await Promise.all([
-        reelsApi.getReels().catch(() => ({ data: [] })),
-        videosApi.getVideos().catch(() => ({ data: [] })),
-        photosApi.getPhotos().catch(() => ({ data: [] })),
-        liveApi.getLive().catch(() => ({ data: [] })),
-        storiesApi.getStories().catch(() => ({ data: [] })),
-        shayariPhotosApi.getShayariPhotos().catch(() => ({ data: [] })),
-      ]);
-
-      const calculateStats = (data: any[]): ContentStats => {
-        return data.reduce(
-          (acc, item) => {
-            acc.total += 1;
-            acc.stars += item.stars || 0;
-            acc.comments += item.comments || 0;
-            acc.shares += item.shares || 0;
-            acc.views += item.views || 0;
-            return acc;
-          },
-          { total: 0, stars: 0, comments: 0, shares: 0, views: 0 }
-        );
-      };
-
-      const allStats = [
-        calculateStats(Array.isArray(videosData) ? videosData : []),
-        calculateStats(Array.isArray(reelsData) ? reelsData : []),
-        calculateStats(Array.isArray(photosData) ? photosData : []),
-        calculateStats(Array.isArray(storiesData) ? storiesData : []),
-        calculateStats(Array.isArray(liveData) ? liveData : []),
-        calculateStats(Array.isArray(shayariPhotosData) ? shayariPhotosData : []),
+      // Load summary data from AsyncStorage or API
+      // This is sample data - replace with actual API calls
+      const mockStats = [
+        { total: 12, stars: 345, comments: 89, shares: 45, views: 1234 },
+        { total: 8, stars: 567, comments: 123, shares: 67, views: 2345 },
+        { total: 25, stars: 789, comments: 234, shares: 89, views: 3456 },
+        { total: 15, stars: 234, comments: 56, shares: 34, views: 987 },
+        { total: 5, stars: 123, comments: 45, shares: 23, views: 654 },
+        { total: 20, stars: 456, comments: 78, shares: 56, views: 876 },
       ];
 
       const newSections = sections.map((section, index) => ({
         ...section,
-        stats: allStats[index]
+        stats: mockStats[index]
       }));
       
       setSections(newSections);
@@ -144,18 +112,28 @@ export default function UserDataScreen() {
     }
   };
 
-  const toggleSection = (index: number) => {
-    const newSections = [...sections];
-    newSections[index].expanded = !newSections[index].expanded;
-    setSections(newSections);
-  };
-
-  const handleAddBankAccount = () => {
-    Alert.alert(
-      "Add Bank Account",
-      "This feature will be available soon!",
-      [{ text: "OK" }]
-    );
+  const handleSectionPress = (section: SectionData) => {
+    // Navigate to respective screen with data using Expo Router
+    const screenMap: Record<string, string> = {
+      'VideoTool': '/Databes/VideoToolScreen',
+      'ReelsTool': '/Databes/ReelsToolScreen',
+      'PhotoTool': '/Databes/PhotoToolScreen',
+      'StoryTool': '/Databes/StoryToolScreen',
+      'LiveTool': '/Databes/LiveToolScreen',
+      'SongTool': '/Databes/SongToolScreen',
+      'video/[id]': '/video/[id]',
+    };
+    
+    const route = screenMap[section.screen];
+    if (route) {
+      router.push({
+        pathname: route,
+        params: {
+          title: section.name,
+          stats: JSON.stringify(section.stats)
+        }
+      });
+    }
   };
 
   const handleYourEarning = () => {
@@ -166,7 +144,14 @@ export default function UserDataScreen() {
     );
   };
 
-  // Calculate rank based on total stars (example)
+  const handleAddBankAccount = () => {
+    Alert.alert(
+      "Add Bank Account",
+      "This feature will be available soon!",
+      [{ text: "OK" }]
+    );
+  };
+
   const getRank = () => {
     const total = totalData.totalStars;
     if (total > 10000) return "Diamond";
@@ -224,7 +209,14 @@ export default function UserDataScreen() {
           </View>
         </View>
 
-        {/* Database Sections */}
+        {/* Your Earning Button */}
+        <TouchableOpacity style={styles.earningButton} onPress={handleYourEarning}>
+          <MaterialIcons name="account-balance-wallet" size={22} color="#2196F3" />
+          <Text style={styles.earningButtonText}>Your Earning</Text>
+          <MaterialIcons name="arrow-forward" size={18} color="#2196F3" />
+        </TouchableOpacity>
+
+        {/* Database Sections - Clickable Cards */}
         <View style={styles.databaseContainer}>
           <View style={styles.databaseHeader}>
             <MaterialIcons name="storage" size={20} color="#2196F3" />
@@ -232,70 +224,39 @@ export default function UserDataScreen() {
           </View>
           
           {sections.map((section, index) => (
-            <View key={index} style={styles.databaseCard}>
-              <TouchableOpacity 
-                style={styles.databaseRow} 
-                onPress={() => toggleSection(index)}
-                activeOpacity={0.7}
-              >
+            <TouchableOpacity 
+              key={index} 
+              style={styles.databaseCard}
+              onPress={() => handleSectionPress(section)}
+              activeOpacity={0.7}
+            >
+              <View style={styles.databaseRow}>
                 <View style={styles.databaseLeft}>
-                  <MaterialIcons name={section.icon as any} size={20} color="#2196F3" />
-                  <Text style={styles.databaseName}>{section.name}</Text>
-                  <Text style={styles.databaseCount}>({section.stats.total})</Text>
-                </View>
-                
-                <MaterialIcons 
-                  name={section.expanded ? "keyboard-arrow-up" : "keyboard-arrow-down"} 
-                  size={22} 
-                  color="#666" 
-                />
-              </TouchableOpacity>
-
-              {section.expanded && (
-                <View style={styles.databaseDetails}>
-                  <View style={styles.detailRow}>
-                    <View style={styles.detailItem}>
-                      <Ionicons name="star" size={16} color="#FFD700" />
-                      <Text style={styles.detailText}>{section.stats.stars.toLocaleString()}</Text>
-                    </View>
-                    
-                    <View style={styles.detailItem}>
-                      <MaterialIcons name="comment" size={16} color="#4CAF50" />
-                      <Text style={styles.detailText}>{section.stats.comments.toLocaleString()}</Text>
-                    </View>
-                    
-                    <View style={styles.detailItem}>
-                      <MaterialIcons name="share" size={16} color="#2196F3" />
-                      <Text style={styles.detailText}>{section.stats.shares.toLocaleString()}</Text>
-                    </View>
-                    
-                    <View style={styles.detailItem}>
-                      <MaterialIcons name="visibility" size={16} color="#FF9800" />
-                      <Text style={styles.detailText}>{section.stats.views.toLocaleString()}</Text>
-                    </View>
+                  <MaterialIcons name={section.icon as any} size={22} color="#2196F3" />
+                  <View style={styles.databaseInfo}>
+                    <Text style={styles.databaseName}>{section.name}</Text>
+                    <Text style={styles.databaseCount}>{section.stats.total} items</Text>
                   </View>
                 </View>
-              )}
-            </View>
+                
+                <View style={styles.databaseStats}>
+                  <View style={styles.statBadge}>
+                    <Ionicons name="star" size={12} color="#FFD700" />
+                    <Text style={styles.statBadgeText}>{section.stats.stars}</Text>
+                  </View>
+                  <MaterialIcons name="chevron-right" size={24} color="#666" />
+                </View>
+              </View>
+            </TouchableOpacity>
           ))}
         </View>
 
-        {/* Two Buttons - Bank Account and Your Earning */}
-        <View style={styles.buttonsContainer}>
-          {/* Add Bank Account Button */}
-          <TouchableOpacity style={styles.actionButton} onPress={handleAddBankAccount}>
-            <MaterialIcons name="account-balance" size={24} color="#fff" />
-            <Text style={styles.actionButtonText}>Add Bank Account</Text>
-            <MaterialIcons name="arrow-forward" size={20} color="#fff" />
-          </TouchableOpacity>
-
-          {/* Your Earning Button */}
-          <TouchableOpacity style={styles.actionButton} onPress={handleYourEarning}>
-            <MaterialIcons name="account-balance-wallet" size={24} color="#fff" />
-            <Text style={styles.actionButtonText}>Your Earning</Text>
-            <MaterialIcons name="arrow-forward" size={20} color="#fff" />
-          </TouchableOpacity>
-        </View>
+        {/* Add Bank Account Button */}
+        <TouchableOpacity style={styles.bankButton} onPress={handleAddBankAccount}>
+          <MaterialIcons name="account-balance" size={22} color="#2196F3" />
+          <Text style={styles.bankButtonText}>Add Bank Account</Text>
+          <MaterialIcons name="arrow-forward" size={18} color="#2196F3" />
+        </TouchableOpacity>
       </ScrollView>
     </SafeScreen>
   );
@@ -320,6 +281,7 @@ const styles = StyleSheet.create({
   rankCard: {
     backgroundColor: '#0A0A0A',
     margin: 12,
+    marginBottom: 8,
     padding: 16,
     borderRadius: 12,
     borderWidth: 1,
@@ -370,6 +332,26 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#fff',
   },
+  earningButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#0A0A0A',
+    marginHorizontal: 12,
+    marginBottom: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#2196F3',
+  },
+  earningButtonText: {
+    color: '#2196F3',
+    fontSize: 15,
+    fontWeight: '500',
+    flex: 1,
+    marginLeft: 10,
+  },
   databaseContainer: {
     margin: 12,
   },
@@ -387,7 +369,7 @@ const styles = StyleSheet.create({
   },
   databaseCard: {
     backgroundColor: '#0A0A0A',
-    borderRadius: 8,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: '#1A1A1A',
     marginBottom: 8,
@@ -403,65 +385,56 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
   },
+  databaseInfo: {
+    marginLeft: 12,
+  },
   databaseName: {
-    fontSize: 15,
+    fontSize: 16,
     fontWeight: '500',
     color: '#fff',
-    marginLeft: 10,
+    marginBottom: 2,
   },
   databaseCount: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#666',
-    marginLeft: 6,
   },
-  databaseDetails: {
-    padding: 14,
-    paddingTop: 0,
-    borderTopWidth: 1,
-    borderTopColor: '#1A1A1A',
-  },
-  detailRow: {
+  databaseStats: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
+    alignItems: 'center',
   },
-  detailItem: {
+  statBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#1A1A1A',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 6,
-    marginBottom: 4,
-    width: '48%',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginRight: 8,
   },
-  detailText: {
-    fontSize: 13,
+  statBadgeText: {
+    fontSize: 12,
     color: '#fff',
     marginLeft: 4,
   },
-  buttonsContainer: {
-    margin: 12,
-    marginTop: 8,
-    marginBottom: 20,
-  },
-  actionButton: {
+  bankButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#2196F3',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    borderRadius: 12,
+    backgroundColor: '#0A0A0A',
+    margin: 12,
+    marginTop: 0,
+    marginBottom: 20,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: '#2196F3',
-    marginBottom: 10,
   },
-  actionButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+  bankButtonText: {
+    color: '#2196F3',
+    fontSize: 15,
+    fontWeight: '500',
     flex: 1,
-    marginLeft: 12,
+    marginLeft: 10,
   },
 });
