@@ -14,6 +14,7 @@ import { SafeScreen } from '../../components/layout/SafeScreen';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { theme } from '../../constants/theme';
 import { useRouter } from 'expo-router';
+import WalletConnect from '../../frontend/WalletConnect';
 
 interface ContentStats {
   total: number;
@@ -248,6 +249,15 @@ export default function UserDataScreen() {
           ))}
         </View>
 
+        {/* Wallet Connect Section */}
+        <View style={styles.walletContainer}>
+          <View style={styles.walletHeader}>
+            <MaterialIcons name="account-balance-wallet" size={20} color="#2196F3" />
+            <Text style={styles.walletTitle}>Wallet Connect</Text>
+          </View>
+          <WalletConnect />
+        </View>
+
         {/* Add Bank Account Button */}
         <TouchableOpacity style={styles.bankButton} onPress={handleAddBankAccount}>
           <MaterialIcons name="account-balance" size={22} color="#2196F3" />
@@ -433,5 +443,21 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     flex: 1,
     marginLeft: 10,
+  },
+  walletContainer: {
+    margin: 12,
+    marginBottom: 8,
+  },
+  walletHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+    paddingHorizontal: 4,
+  },
+  walletTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#2196F3',
+    marginLeft: 6,
   },
 });
