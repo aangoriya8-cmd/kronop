@@ -135,6 +135,24 @@ export default function RootLayout() {
 
                 />
 
+                <Stack.Screen 
+                  name="settings" 
+                  options={{ 
+                    headerShown: false,
+                    animation: 'none',
+                    contentStyle: { backgroundColor: '#000' }
+                  }} 
+                />
+
+                <Stack.Screen 
+                  name="verification" 
+                  options={{ 
+                    headerShown: false,
+                    animation: 'none',
+                    contentStyle: { backgroundColor: '#000' }
+                  }} 
+                />
+
               </Stack>
 
           </GhostStealthProvider>

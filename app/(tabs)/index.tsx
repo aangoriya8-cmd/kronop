@@ -23,12 +23,12 @@ import LiveUpload from '../../components/upload/LiveUpload';
 import SongUpload from '../../components/upload/SongUpload';
 
 // Bridge imports
-import BridgeStory from '../../app/bridge-story';
-import BridgePhoto from '../../app/bridge-photo';
-import BridgeReels from '../../app/bridge-reels';
-import BridgeVideo from '../../app/bridge-video';
-import BridgeLive from '../../app/bridge-live';
-import BridgeSongs from '../../app/bridge-songs';
+import BridgeStory from '../../components/uploadBridge/bridge-story';
+import BridgePhoto from '../../components/uploadBridge/bridge-photo';
+import BridgeReels from '../../components/uploadBridge/bridge-reels';
+import BridgeVideo from '../../components/uploadBridge/bridge-video';
+import BridgeLive from '../../components/uploadBridge/bridge-live';
+import BridgeSongs from '../../components/uploadBridge/bridge-songs';
 
 // Mock songs data for music player - Hindi New Songs (15 Songs)
 const mockSongs = [

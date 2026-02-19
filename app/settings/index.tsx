@@ -33,6 +33,7 @@ const settingsData: SettingItem[] = [
   { id: 'SelfDestructChats', name: 'Self Destruct Chats', icon: 'timer-off', enabled: false },
   { id: 'ShakeToReport', name: 'Shake To Report', icon: 'report-problem', enabled: false },
   { id: 'StorageManager', name: 'Storage Manager', icon: 'storage', enabled: false },
+  { id: 'DeleteAccount', name: 'Delete Account', icon: 'delete', enabled: false },
 ];
 
 export default function SettingsScreen() {
@@ -67,7 +68,7 @@ export default function SettingsScreen() {
         <Text style={styles.settingName}>{setting.name}</Text>
       </View>
       
-      {setting.id !== 'Logout' ? (
+      {setting.id !== 'Logout' && setting.id !== 'DeleteAccount' ? (
         <TouchableOpacity 
           style={[styles.toggleButton, setting.enabled && styles.toggleButtonEnabled]}
           onPress={() => toggleSetting(setting.id)}
@@ -83,11 +84,11 @@ export default function SettingsScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Settings</Text>
-      </View>
-      
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Settings</Text>
+        </View>
+        
         <View style={styles.settingsContainer}>
           {settings.map(renderSettingItem)}
         </View>

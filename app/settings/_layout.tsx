@@ -31,6 +31,7 @@ export default function SettingsLayout() {
       <Stack.Screen name="SelfDestructChats" />
       <Stack.Screen name="ShakeToReport" />
       <Stack.Screen name="StorageManager" />
+      <Stack.Screen name="DeleteAccount" />
     </Stack>
   );
 }

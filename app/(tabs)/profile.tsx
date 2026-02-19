@@ -114,6 +114,10 @@ export default function ProfileScreen() {
     router.push('/settings');
   };
 
+  const handleVerificationPress = () => {
+    router.push('/verification');
+  };
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 'video':
@@ -167,7 +171,7 @@ export default function ProfileScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <StatusBar barStyle="light-content" backgroundColor="#000000" />
       {/* Top Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
@@ -176,6 +180,12 @@ export default function ProfileScreen() {
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.iconButton}>
             <Ionicons name="leaf" size={20} color="#FFFFFF" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton} onPress={handleSettingsPress}>
+            <Ionicons name="settings" size={20} color="#FFFFFF" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton} onPress={handleVerificationPress}>
+            <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
       </View>

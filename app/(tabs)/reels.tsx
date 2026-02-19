@@ -137,7 +137,11 @@ function ReelItem({
         console.log('▶️ Playing video...');
         setTimeout(() => {
           try {
-            playerInstance.play();
+            if (playerInstance && typeof playerInstance.play === 'function') {
+              playerInstance.play();
+            } else {
+              console.warn('⚠️ Player instance not ready or invalid');
+            }
           } catch (err: any) {
             console.error('❌ Play error:', err);
           }
@@ -149,11 +153,19 @@ function ReelItem({
   // Player manages itself automatically - no manual cleanup needed
 
   useEffect(() => {
-    if (playerRef.current) {
+    if (playerRef.current && isPlayerReadyRef.current) {
       if (isActive && !isPaused) {
-        playerRef.current.play();
+        try {
+          playerRef.current.play();
+        } catch (err: any) {
+          console.error('❌ Play error in useEffect:', err);
+        }
       } else if (!isActive) {
-        playerRef.current.pause();
+        try {
+          playerRef.current.pause();
+        } catch (err: any) {
+          console.error('❌ Pause error in useEffect:', err);
+        }
       }
     }
   }, [isActive, isPaused]);
