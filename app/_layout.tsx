@@ -151,6 +151,16 @@ export default function RootLayout() {
                   contentStyle: { backgroundColor: '#000' }
                 }} 
               />
+
+              <Stack.Screen 
+                name="Databes/BankAccount" 
+                options={{ 
+                  headerShown: false,
+                  animation: 'none',
+                  presentation: 'modal',
+                  contentStyle: { backgroundColor: '#000' }
+                }} 
+              />
             </Stack>
           </GhostStealthProvider>
         </AuthProvider>

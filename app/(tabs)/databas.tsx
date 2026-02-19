@@ -121,6 +121,7 @@ export default function UserDataScreen() {
       'StoryTool': '/Databes/StoryToolScreen',
       'LiveTool': '/Databes/LiveToolScreen',
       'SongTool': '/Databes/SongToolScreen',
+      'BankAccount': '/Databes/BankAccount',
       'video/[id]': '/video/[id]',
     };
     
@@ -145,11 +146,7 @@ export default function UserDataScreen() {
   };
 
   const handleAddBankAccount = () => {
-    Alert.alert(
-      "Add Bank Account",
-      "This feature will be available soon!",
-      [{ text: "OK" }]
-    );
+    router.push('/Databes/BankAccount');
   };
 
   const getRank = () => {
