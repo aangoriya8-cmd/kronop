@@ -65,6 +65,8 @@ interface Reel {
     username: string;
     avatar_url: string;
   };
+  song_name?: string;
+  song_artist?: string;
 }
 
 interface Comment {
@@ -209,6 +211,7 @@ function ReelItem({
       </TouchableOpacity>
 
       <View pointerEvents="box-none" style={styles.leftOverlay}>
+        {/* Channel Name - Above */}
         <View style={styles.channelRow}>
           <ChannelInfo
             avatarUrl={channelAvatar}
@@ -222,6 +225,17 @@ function ReelItem({
           />
         </View>
 
+        {/* Song Information - Below Channel Name */}
+        {item.song_name && (
+          <View style={styles.songInfo}>
+            <View style={styles.songRow}>
+              <MaterialIcons name="music-note" size={16} color="#FFFFFF" />
+              <Text style={styles.songName}>{item.song_name}</Text>
+            </View>
+          </View>
+        )}
+
+        {/* Main Title - Below Song */}
         <View style={styles.leftTitleRow}>
           <RunningTitle title={item.title || item.description || ''} />
         </View>
@@ -312,7 +326,9 @@ export default function ReelsScreen() {
         user_profiles: {
           username: 'SkatePro',
           avatar_url: 'https://i.pravatar.cc/150?img=1'
-        }
+        },
+        song_name: 'Adventure Beats',
+        song_artist: 'DJ SkateMaster'
       }
     ];
     setReels(realReels);
@@ -535,7 +551,7 @@ const styles = StyleSheet.create({
   },
   leftOverlay: {
     position: 'absolute',
-    bottom: 90,
+    bottom: 75,
     left: 12,
     right: 90,
     zIndex: 3,
@@ -546,13 +562,33 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   leftTitleRow: {
-    marginTop: 10,
+    marginTop: 4,
     width: '100%',
+  },
+  songInfo: {
+    marginTop: 2,
+    marginBottom: 4,
+  },
+  songRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  songName: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  songArtist: {
+    color: '#CCCCCC',
+    fontSize: 11,
+    fontWeight: '400',
+    marginTop: 2,
   },
   rightButtons: {
     position: 'absolute',
     right: 12,
-    bottom: 100,
+    bottom: 60,
     alignItems: 'center',
     justifyContent: 'space-evenly',
     height: 240,

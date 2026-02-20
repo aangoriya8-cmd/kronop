@@ -895,7 +895,7 @@ const styles = StyleSheet.create({
     color: theme.colors.text.primary,
   },
   listContent: {
-    paddingBottom: theme.spacing.lg,
+    paddingBottom: 90,
   },
   // Bottom Sheet Modal Styles
   modalOverlay: {

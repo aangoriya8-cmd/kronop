@@ -395,6 +395,7 @@ export default function LiveScreen() {
         decelerationRate="fast"
         onMomentumScrollEnd={handleScroll}
         style={styles.streamsList}
+        contentContainerStyle={styles.streamsListContent}
       />
     </View>
   );
@@ -448,6 +449,9 @@ const styles = StyleSheet.create({
   },
   streamsList: {
     flex: 1,
+  },
+  streamsListContent: {
+    paddingBottom: 90,
   },
   liveContainer: {
     position: 'relative',

@@ -190,7 +190,7 @@ export default function ProfileScreen() {
         </View>
       </View>
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Cover Photo */}
         <View style={styles.coverPhotoContainer}>
           <Image source={{ uri: userData.coverPhoto }} style={styles.coverPhoto} />
@@ -363,6 +363,9 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 90,
   },
   coverPhotoContainer: {
     position: 'relative',

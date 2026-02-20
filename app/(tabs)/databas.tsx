@@ -182,6 +182,7 @@ export default function UserDataScreen() {
     <SafeScreen>
       <ScrollView
         style={styles.container}
+        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[AppColors.refresh]} />
@@ -296,6 +297,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: AppColors.background.primary,
+  },
+  scrollContent: {
+    paddingBottom: 90,
   },
   loadingContainer: {
     flex: 1,

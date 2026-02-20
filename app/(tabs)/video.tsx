@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     fontWeight: theme.typography.fontWeight.semibold,
   },
   list: {
-    paddingBottom: theme.spacing.xxl,
+    paddingBottom: 90,
   },
   emptyContainer: {
     alignItems: 'center',
