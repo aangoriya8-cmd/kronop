@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   Alert,
+  Modal,
 } from 'react-native';
 
 import { SafeScreen } from '../../components/layout/SafeScreen';
@@ -43,7 +44,8 @@ export default function UserDataScreen() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  
+  const [showWalletModal, setShowWalletModal] = useState(false);
+
   const [totalData, setTotalData] = useState<TotalData>({
     totalContent: 0,
     totalStars: 0,
@@ -51,7 +53,7 @@ export default function UserDataScreen() {
     totalShares: 0,
     totalViews: 0,
   });
-  
+
   const [sections, setSections] = useState<SectionData[]>([
     { name: 'Video Tool', screen: 'VideoTool', icon: 'videocam', stats: { total: 0, stars: 0, comments: 0, shares: 0, views: 0 } },
     { name: 'Reels Tool', screen: 'ReelsTool', icon: 'movie', stats: { total: 0, stars: 0, comments: 0, shares: 0, views: 0 } },
@@ -74,7 +76,7 @@ export default function UserDataScreen() {
   const loadData = async () => {
     try {
       setLoading(true);
-      
+
       // Load summary data from AsyncStorage or API
       // This is sample data - replace with actual API calls
       const mockStats = [
@@ -90,7 +92,7 @@ export default function UserDataScreen() {
         ...section,
         stats: mockStats[index]
       }));
-      
+
       setSections(newSections);
 
       const total = newSections.reduce(
@@ -125,11 +127,11 @@ export default function UserDataScreen() {
       'BankAccount': '/Databes/BankAccount',
       'video/[id]': '/video/[id]',
     };
-    
+
     const route = screenMap[section.screen];
     if (route) {
       router.push({
-        pathname: route,
+        pathname: route as any,
         params: {
           title: section.name,
           stats: JSON.stringify(section.stats)
@@ -148,6 +150,10 @@ export default function UserDataScreen() {
 
   const handleAddBankAccount = () => {
     router.push('/Databes/BankAccount');
+  };
+
+  const handleWalletConnection = () => {
+    setShowWalletModal(true);
   };
 
   const getRank = () => {
@@ -173,8 +179,8 @@ export default function UserDataScreen() {
 
   return (
     <SafeScreen>
-      <ScrollView 
-        style={styles.container} 
+      <ScrollView
+        style={styles.container}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#2196F3']} />
@@ -187,13 +193,13 @@ export default function UserDataScreen() {
             <MaterialIcons name="stars" size={24} color="#2196F3" />
             <Text style={styles.cardTitle}>Your Rank</Text>
           </View>
-          
+
           <View style={styles.rankContainer}>
             <View style={styles.rankBadge}>
               <Ionicons name="trophy" size={32} color="#FFD700" />
               <Text style={styles.rankText}>{getRank()}</Text>
             </View>
-            
+
             <View style={styles.rankStats}>
               <View style={styles.rankStatItem}>
                 <Text style={styles.rankStatLabel}>Total Stars</Text>
@@ -220,10 +226,10 @@ export default function UserDataScreen() {
             <MaterialIcons name="storage" size={20} color="#2196F3" />
             <Text style={styles.databaseTitle}>Database</Text>
           </View>
-          
+
           {sections.map((section, index) => (
-            <TouchableOpacity 
-              key={index} 
+            <TouchableOpacity
+              key={index}
               style={styles.databaseCard}
               onPress={() => handleSectionPress(section)}
               activeOpacity={0.7}
@@ -236,7 +242,7 @@ export default function UserDataScreen() {
                     <Text style={styles.databaseCount}>{section.stats.total} items</Text>
                   </View>
                 </View>
-                
+
                 <View style={styles.databaseStats}>
                   <View style={styles.statBadge}>
                     <Ionicons name="star" size={12} color="#FFD700" />
@@ -249,14 +255,12 @@ export default function UserDataScreen() {
           ))}
         </View>
 
-        {/* Wallet Connect Section */}
-        <View style={styles.walletContainer}>
-          <View style={styles.walletHeader}>
-            <MaterialIcons name="account-balance-wallet" size={20} color="#2196F3" />
-            <Text style={styles.walletTitle}>Wallet Connect</Text>
-          </View>
-          <WalletConnect />
-        </View>
+        {/* Wallet Connection Button */}
+        <TouchableOpacity style={styles.walletButton} onPress={handleWalletConnection}>
+          <MaterialIcons name="account-balance-wallet" size={22} color="#2196F3" />
+          <Text style={styles.walletButtonText}>Wallet Connection</Text>
+          <MaterialIcons name="arrow-forward" size={18} color="#2196F3" />
+        </TouchableOpacity>
 
         {/* Add Bank Account Button */}
         <TouchableOpacity style={styles.bankButton} onPress={handleAddBankAccount}>
@@ -265,6 +269,25 @@ export default function UserDataScreen() {
           <MaterialIcons name="arrow-forward" size={18} color="#2196F3" />
         </TouchableOpacity>
       </ScrollView>
+
+      {/* Wallet Modal */}
+      <Modal
+        visible={showWalletModal}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setShowWalletModal(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <TouchableOpacity onPress={() => setShowWalletModal(false)}>
+              <MaterialIcons name="close" size={24} color="#2196F3" />
+            </TouchableOpacity>
+            <Text style={styles.modalTitle}>Wallet Connection</Text>
+            <View style={styles.placeholder} />
+          </View>
+          <WalletConnect />
+        </View>
+      </Modal>
     </SafeScreen>
   );
 }
@@ -444,20 +467,44 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
   },
-  walletContainer: {
-    margin: 12,
-    marginBottom: 8,
-  },
-  walletHeader: {
+  walletButton: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#0A0A0A',
+    marginHorizontal: 12,
     marginBottom: 12,
-    paddingHorizontal: 4,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#2196F3',
   },
-  walletTitle: {
-    fontSize: 16,
-    fontWeight: '500',
+  walletButtonText: {
     color: '#2196F3',
-    marginLeft: 6,
+    fontSize: 15,
+    fontWeight: '500',
+    flex: 1,
+    marginLeft: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#000000',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#1A1A1A',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  placeholder: {
+    width: 24,
   },
 });

@@ -2,7 +2,7 @@ import { Tabs } from 'expo-router';
 import { Platform, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../constants/theme';
-import { Home, Sparkles, Youtube, Layers, User } from 'lucide-react-native';
+import { Home, Sparkles, Youtube, User } from 'lucide-react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function TabLayout() {
@@ -35,24 +35,6 @@ export default function TabLayout() {
             }),
             paddingHorizontal: 8,
           },
-          tabBarLabelStyle: {
-            fontSize: 11,
-            fontWeight: theme.typography.fontWeight.medium,
-            marginTop: 2,
-            marginBottom: 0,
-          },
-          tabBarIconStyle: {
-            marginTop: 0,
-            marginBottom: 0,
-            flex: 1,
-            textAlign: 'center',
-            alignItems: 'center',
-            justifyContent: 'center',
-          },
-          tabBarItemStyle: {
-            alignItems: 'center',
-            justifyContent: 'center',
-          },
         }}
       >
         <Tabs.Screen
@@ -76,6 +58,7 @@ export default function TabLayout() {
             tabBarIcon: ({ color }) => <Youtube size={24} color={color} strokeWidth={1.5} />,
           }}
         />
+        {/* --- 1. LIVE SECTION --- */}
         <Tabs.Screen
           name="live"
           options={{
@@ -83,13 +66,15 @@ export default function TabLayout() {
             tabBarIcon: ({ color }) => <Ionicons name="radio" size={26} color={color} />,
           }}
         />
+        {/* --- 2. DATABASE SECTION - MOVED BETWEEN LIVE AND PROFILE --- */}
         <Tabs.Screen
-          name="userdata"
+          name="databas"
           options={{
             title: 'Database',
-            tabBarIcon: ({ color }) => <Layers size={24} color={color} strokeWidth={1.5} />,
+            tabBarIcon: ({ color }) => <Ionicons name="server-outline" size={24} color={color} />,
           }}
         />
+        {/* --- 3. PROFILE SECTION --- */}
         <Tabs.Screen
           name="profile"
           options={{
@@ -101,7 +86,7 @@ export default function TabLayout() {
           name="settings"
           options={{
             title: 'Settings',
-            tabBarIcon: ({ color }) => <Ionicons name="settings" size={24} color={color} />,
+            tabBarIcon: ({ color }) => <Ionicons name="settings-outline" size={24} color={color} />,
           }}
         />
       </Tabs>

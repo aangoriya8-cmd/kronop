@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { useAccount, useConnect, useDisconnect, useSignMessage } from 'wagmi';
 import { mainnet, polygon, arbitrum } from 'wagmi/chains';
-import { injected, metaMask, walletConnect } from 'wagmi/connectors';
+import { walletConnect, coinbaseWallet } from 'wagmi/connectors';
 import { useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface WalletData {
   address: string;
@@ -130,8 +131,11 @@ const WalletConnect: React.FC = () => {
   };
 
   // Connect wallet
-  const handleConnect = (connector: any) => {
-    connect({ connector });
+  const handleConnect = (connectorId: string) => {
+    const connector = wagmiConnectors.find(c => c.id === connectorId);
+    if (connector) {
+      connect({ connector });
+    }
   };
 
   // Disconnect wallet
@@ -147,22 +151,35 @@ const WalletConnect: React.FC = () => {
     Alert.alert('Address Copied', walletData.address);
   };
 
-  // Get available connectors
+  // Get available connectors - Mobile friendly only
   const availableConnectors = [
-    {
-      id: 'injected',
-      name: 'Browser Wallet',
-      icon: '🌐',
-    },
-    {
-      id: 'metaMask',
-      name: 'MetaMask',
-      icon: '🦊',
-    },
     {
       id: 'walletConnect',
       name: 'WalletConnect',
       icon: '🔗',
+      gradient: ['#4F46E5', '#7C3AED'],
+      description: 'Connect any mobile wallet'
+    },
+    {
+      id: 'coinbaseWallet',
+      name: 'Coinbase Wallet',
+      icon: '🟦',
+      gradient: ['#0052FF', '#0066FF'],
+      description: 'Connect Coinbase Wallet app'
+    },
+    {
+      id: 'trustWallet',
+      name: 'Trust Wallet',
+      icon: '🛡️',
+      gradient: ['#FF6B6B', '#FF8E53'],
+      description: 'Popular mobile wallet'
+    },
+    {
+      id: 'rainbow',
+      name: 'Rainbow',
+      icon: '🌈',
+      gradient: ['#667EEA', '#764BA2'],
+      description: 'Elegant mobile wallet'
     },
   ];
 
@@ -223,46 +240,62 @@ const WalletConnect: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.title}>🔗 Connect Your Wallet</Text>
-        <Text style={styles.subtitle}>
-          Connect your Ethereum wallet to access secure banking services
-        </Text>
+        <View style={styles.header}>
+          <Text style={styles.title}>🔗 Connect Your Wallet</Text>
+          <Text style={styles.subtitle}>
+            Choose your preferred wallet to access secure banking services
+          </Text>
+        </View>
 
         <View style={styles.walletList}>
-          {availableConnectors.map((connector) => (
+          {availableConnectors.map((connector, index) => (
             <TouchableOpacity
               key={connector.id}
               style={[
                 styles.walletButton,
-                isPending && connector.id === availableConnectors[0]?.id && styles.disabledButton
+                isPending && styles.disabledButton,
+                { marginBottom: index === availableConnectors.length - 1 ? 0 : 16 }
               ]}
-              onPress={() => handleConnect(connector)}
+              onPress={() => handleConnect(connector.id)}
               disabled={isPending}
+              activeOpacity={0.8}
             >
-              <View style={styles.walletInfo}>
-                <Text style={styles.walletName}>{connector.name}</Text>
-                <Text style={styles.walletDesc}>
-                  {connector.name === 'MetaMask' && 'Most popular wallet'}
-                  {connector.name === 'WalletConnect' && 'Connect any wallet'}
-                  {connector.name === 'Browser Wallet' && 'Browser extension wallet'}
-                </Text>
-              </View>
-              {isPending && connector.id === availableConnectors[0]?.id ? (
-                <ActivityIndicator color="#007AFF" />
-              ) : (
-                <Text style={styles.connectArrow}>{connector.icon}</Text>
-              )}
+              <LinearGradient
+                colors={connector.gradient as any}
+                style={styles.walletButtonGradient}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+              >
+                <View style={styles.walletContent}>
+                  <View style={styles.walletLeft}>
+                    <View style={styles.walletIconContainer}>
+                      <Text style={styles.walletIcon}>{connector.icon}</Text>
+                    </View>
+                    <View style={styles.walletInfo}>
+                      <Text style={styles.walletName}>{connector.name}</Text>
+                      <Text style={styles.walletDesc}>{connector.description}</Text>
+                    </View>
+                  </View>
+                  {isPending ? (
+                    <ActivityIndicator color="#fff" size="small" />
+                  ) : (
+                    <View style={styles.connectIcon}>
+                      <Text style={styles.connectArrow}>→</Text>
+                    </View>
+                  )}
+                </View>
+              </LinearGradient>
             </TouchableOpacity>
           ))}
         </View>
 
         <View style={styles.securityNotice}>
-          <Text style={styles.securityTitle}>🔒 Security Notice</Text>
+          <Text style={styles.securityTitle}>🔒 Secure & Private</Text>
           <Text style={styles.securityText}>
-            • Your wallet will be securely verified using cryptographic signatures
-            • No gas fees required for wallet connection
-            • Your private keys never leave your device
-            • All transactions require your explicit approval
+            • Your wallet is cryptographically verified
+            • Zero gas fees for connection
+            • Private keys never leave your device
+            • You control all transactions
           </Text>
         </View>
       </View>
@@ -273,95 +306,136 @@ const WalletConnect: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#0a0a0a',
     padding: 20,
   },
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 24,
+    backgroundColor: '#1a1a1a',
+    borderRadius: 24,
+    padding: 28,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+    borderWidth: 1,
+    borderColor: '#2a2a2a',
   },
-  connectedCard: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+  header: {
+    alignItems: 'center',
+    marginBottom: 32,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    color: '#1a1a1a',
-    marginBottom: 8,
+    color: '#ffffff',
+    marginBottom: 12,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
+    color: '#888888',
     textAlign: 'center',
-    marginBottom: 32,
-    lineHeight: 22,
+    lineHeight: 24,
   },
   walletList: {
-    marginBottom: 24,
+    marginBottom: 32,
   },
   walletButton: {
+    borderRadius: 20,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  walletButtonGradient: {
+    padding: 4,
+  },
+  walletContent: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 12,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#e9ecef',
+    backgroundColor: '#1a1a1a',
+    borderRadius: 16,
+    padding: 20,
   },
-  disabledButton: {
-    opacity: 0.6,
+  walletLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  walletIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: '#2a2a2a',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 16,
+  },
+  walletIcon: {
+    fontSize: 24,
   },
   walletInfo: {
     flex: 1,
   },
   walletName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1a1a1a',
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#ffffff',
     marginBottom: 4,
   },
   walletDesc: {
     fontSize: 14,
-    color: '#666',
+    color: '#888888',
+  },
+  connectIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#2a2a2a',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   connectArrow: {
-    fontSize: 20,
-    color: '#007AFF',
+    fontSize: 18,
+    color: '#ffffff',
     fontWeight: 'bold',
   },
+  disabledButton: {
+    opacity: 0.5,
+  },
   securityNotice: {
-    backgroundColor: '#f0f8ff',
-    padding: 16,
-    borderRadius: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: '#007AFF',
+    backgroundColor: '#1a1a1a',
+    padding: 20,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#2a2a2a',
   },
   securityTitle: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#007AFF',
-    marginBottom: 8,
+    fontWeight: '700',
+    color: '#ffffff',
+    marginBottom: 12,
   },
   securityText: {
     fontSize: 14,
-    color: '#666',
-    lineHeight: 20,
+    color: '#888888',
+    lineHeight: 22,
+  },
+  connectedCard: {
+    backgroundColor: '#1a1a1a',
+    borderRadius: 24,
+    padding: 28,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+    borderWidth: 1,
+    borderColor: '#2a2a2a',
   },
   statusRow: {
     flexDirection: 'row',
@@ -384,7 +458,7 @@ const styles = StyleSheet.create({
   },
   addressLabel: {
     fontSize: 14,
-    color: '#666',
+    color: '#888888',
     marginBottom: 8,
   },
   addressRow: {
@@ -392,13 +466,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 12,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 8,
+    backgroundColor: '#2a2a2a',
+    borderRadius: 12,
   },
   addressText: {
     fontSize: 16,
     fontFamily: 'monospace',
-    color: '#1a1a1a',
+    color: '#ffffff',
   },
   copyText: {
     fontSize: 16,
@@ -410,7 +484,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   primaryButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#4F46E5',
   },
   secondaryButton: {
     backgroundColor: '#4CAF50',
