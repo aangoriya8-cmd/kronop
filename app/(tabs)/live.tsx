@@ -83,86 +83,6 @@ const mockLiveStreams: LiveStream[] = [
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
-// Simple Dot Animation component - NO STAR VISIBLE
-const DotAnimation = ({ isActive }: { isActive: boolean }) => {
-  const dotsAnim = useRef(new Animated.Value(0)).current;
-  const [animationActive, setAnimationActive] = useState(false);
-
-  const startAnimation = React.useCallback(() => {
-    setAnimationActive(true);
-    dotsAnim.setValue(0);
-
-    // Simple dots animation only
-    Animated.timing(dotsAnim, {
-      toValue: 1,
-      duration: 800,
-      useNativeDriver: true,
-    }).start(() => {
-      // Fade out after animation
-      setTimeout(() => {
-        setAnimationActive(false);
-      }, 300);
-    });
-  }, [dotsAnim]);
-
-  React.useEffect(() => {
-    if (isActive) {
-      startAnimation();
-    }
-  }, [isActive, startAnimation]);
-
-  if (!animationActive) return null;
-
-  return (
-    <View style={styles.dotAnimationContainer}>
-      {/* Multiple dots coming from all directions */}
-      {Array.from({ length: 200 }).map((_, i) => {
-        const angle = (i * 1.8) * (Math.PI / 180); // 200 dots
-        const distance = 250 + Math.random() * 150;
-        const size = 1 + Math.random() * 2; // 1-3px
-        
-        return (
-          <Animated.View 
-            key={`dot-${i}`}
-            style={[
-              styles.tinyRedDot,
-              {
-                width: size,
-                height: size,
-                borderRadius: size / 2,
-                opacity: dotsAnim.interpolate({
-                  inputRange: [0, 0.5, 1],
-                  outputRange: [0, 1, 0]
-                }),
-                transform: [
-                  {
-                    translateX: dotsAnim.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [Math.cos(angle) * distance, 0]
-                    })
-                  },
-                  {
-                    translateY: dotsAnim.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [Math.sin(angle) * distance, 0]
-                    })
-                  },
-                  {
-                    scale: dotsAnim.interpolate({
-                      inputRange: [0, 0.5, 1],
-                      outputRange: [0.3, 1.2, 0.8]
-                    })
-                  }
-                ]
-              }
-            ]}
-          />
-        );
-      })}
-    </View>
-  );
-};
-
 export default function LiveScreen() {
   const insets = useSafeAreaInsets();
   const [permission, requestPermission] = useCameraPermissions();
@@ -351,6 +271,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000000',
   },
+  // Dot Animation Styles - moved to top
+  dotAnimationContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1000,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  tinyRedDot: {
+    position: 'absolute',
+    backgroundColor: '#6A5ACD',
+    top: '50%',
+    left: '50%',
+    zIndex: 1000,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -401,22 +339,84 @@ const styles = StyleSheet.create({
   liveContainer: {
     position: 'relative',
   },
-  // Dot Animation Styles
-  dotAnimationContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 1000,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  tinyRedDot: {
-    position: 'absolute',
-    backgroundColor: '#6A5ACD',
-    top: '50%',
-    left: '50%',
-    zIndex: 1000,
-  },
 });
+
+// Simple Dot Animation component - NO STAR VISIBLE
+function DotAnimation({ isActive }: { isActive: boolean }) {
+  const dotsAnim = useRef(new Animated.Value(0)).current;
+  const [animationActive, setAnimationActive] = useState(false);
+
+  const startAnimation = React.useCallback(() => {
+    setAnimationActive(true);
+    dotsAnim.setValue(0);
+
+    // Simple dots animation only
+    Animated.timing(dotsAnim, {
+      toValue: 1,
+      duration: 800,
+      useNativeDriver: true,
+    }).start(() => {
+      // Fade out after animation
+      setTimeout(() => {
+        setAnimationActive(false);
+      }, 300);
+    });
+  }, [dotsAnim]);
+
+  React.useEffect(() => {
+    if (isActive) {
+      startAnimation();
+    }
+  }, [isActive, startAnimation]);
+
+  if (!animationActive) return null;
+
+  return (
+    <View style={styles.dotAnimationContainer}>
+      {/* Multiple dots coming from all directions */}
+      {Array.from({ length: 200 }).map((_, i) => {
+        const angle = (i * 1.8) * (Math.PI / 180); // 200 dots
+        const distance = 250 + Math.random() * 150;
+        const size = 1 + Math.random() * 2; // 1-3px
+        
+        return (
+          <Animated.View 
+            key={`dot-${i}`}
+            style={[
+              styles.tinyRedDot,
+              {
+                width: size,
+                height: size,
+                borderRadius: size / 2,
+                opacity: dotsAnim.interpolate({
+                  inputRange: [0, 0.5, 1],
+                  outputRange: [0, 1, 0]
+                }),
+                transform: [
+                  {
+                    translateX: dotsAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [Math.cos(angle) * distance, 0]
+                    })
+                  },
+                  {
+                    translateY: dotsAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [Math.sin(angle) * distance, 0]
+                    })
+                  },
+                  {
+                    scale: dotsAnim.interpolate({
+                      inputRange: [0, 0.5, 1],
+                      outputRange: [0.3, 1.2, 0.8]
+                    })
+                  }
+                ]
+              }
+            ]}
+          />
+        );
+      })}
+    </View>
+  );
+}

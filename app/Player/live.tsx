@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import { VideoView, useVideoPlayer } from 'expo-video';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
-import { AudioController } from '../../services/AudioController';
+import AudioController from '../../services/AudioController';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -42,8 +42,8 @@ export default function LivePlayer({
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   
-  const playerRef = useRef(null);
-  const controlsTimeoutRef = useRef(null);
+  const playerRef = useRef<any>(null);
+  const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const isPlayerReadyRef = useRef(false);
 
   // Initialize Audio Controller
@@ -52,14 +52,14 @@ export default function LivePlayer({
   }, []);
 
   // Create video player with expo-video
-  const player = useVideoPlayer({
+  const player = useVideoPlayer(videoUrl ? {
     uri: videoUrl,
     headers: {
       'User-Agent': 'KronopApp',
       'Referer': 'https://kronop.app',
       'Origin': 'https://kronop.app'
     }
-  }, (playerInstance) => {
+  } : null, (playerInstance) => {
     console.log('🎥 Live Player created:', playerInstance);
     if (playerInstance) {
       playerRef.current = playerInstance;
@@ -68,8 +68,10 @@ export default function LivePlayer({
       isPlayerReadyRef.current = true;
       setIsVideoReady(true);
 
-      // Apply audio settings from AudioController
-      AudioController.applyToPlayer(playerInstance, isActive);
+      // Apply audio settings from AudioController - Add null check
+      if (AudioController && typeof AudioController.applyToPlayer === 'function') {
+        AudioController.applyToPlayer(playerInstance, isActive);
+      }
 
       if (isActive) {
         console.log('▶️ Starting live stream...');
@@ -116,7 +118,7 @@ export default function LivePlayer({
     }
     controlsTimeoutRef.current = setTimeout(() => {
       setShowControls(false);
-    }, 3000);
+    }, 3000) as unknown as NodeJS.Timeout;
   }, []);
 
   // Toggle mute
@@ -136,25 +138,27 @@ export default function LivePlayer({
   }, []);
 
   // Format time
-  const formatTime = (seconds) => {
+  const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   // Handle progress
-  const handleProgress = useCallback((progress) => {
+  const handleProgress = useCallback((progress: any) => {
     setCurrentTime(progress.currentTime);
     setDuration(progress.duration);
   }, []);
 
   // Seek video
-  const handleSeek = useCallback((event) => {
+  const handleSeek = useCallback((event: any) => {
     if (playerRef.current) {
       const { locationX } = event.nativeEvent;
       const percentage = locationX / SCREEN_WIDTH;
       const seekTime = duration * percentage;
-      playerRef.current.seekTo(seekTime);
+      if (playerRef.current.seekTo) {
+        playerRef.current.seekTo(seekTime);
+      }
     }
   }, [duration]);
 
@@ -170,7 +174,7 @@ export default function LivePlayer({
           player={player} 
           style={[
             styles.video,
-            { opacity: isVideoReady ? 1 : 0 }
+            { opacity: isVideoReady && player ? 1 : 0 }
           ]}
           contentFit="cover"
           nativeControls={false}
@@ -179,7 +183,7 @@ export default function LivePlayer({
         />
         
         {/* Loading Indicator */}
-        {!isVideoReady && (
+        {(!isVideoReady || !player) && (
           <View style={styles.loadingOverlay}>
             <ActivityIndicator size="large" color="#6A5ACD" />
             <Text style={styles.loadingText}>Loading Live Stream...</Text>
@@ -187,7 +191,7 @@ export default function LivePlayer({
         )}
 
         {/* Paused Overlay */}
-        {isPaused && isVideoReady && (
+        {isPaused && isVideoReady && player && (
           <View style={styles.pauseOverlay}>
             <MaterialIcons name="play-circle-outline" size={80} color="rgba(255,255,255,0.8)" />
           </View>

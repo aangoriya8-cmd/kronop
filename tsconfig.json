@@ -46,5 +46,5 @@
     "expo-env.d.ts",
     "types/**/*.d.ts",
     "services/**/*.d.ts"
-  ]
+, "app/Player/song.js"  ]
 }
