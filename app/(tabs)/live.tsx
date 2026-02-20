@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import { Camera, CameraType, FlashMode, useCameraPermissions } from 'expo-camera';
 import * as Video from 'expo-video';
+import LivePlayer from '../Player/live';
 
 interface LiveStream {
   id: string;
@@ -18,6 +19,7 @@ interface LiveStream {
   isSupported: boolean;
   isStarred: boolean;
   starsCount: number;
+  videoUrl: string;
 }
 
 const mockLiveStreams: LiveStream[] = [
@@ -33,6 +35,7 @@ const mockLiveStreams: LiveStream[] = [
     isSupported: false,
     isStarred: false,
     starsCount: 4800,
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
   },
   {
     id: '2',
@@ -46,6 +49,7 @@ const mockLiveStreams: LiveStream[] = [
     isSupported: true,
     isStarred: true,
     starsCount: 8200,
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'
   },
   {
     id: '3',
@@ -59,6 +63,7 @@ const mockLiveStreams: LiveStream[] = [
     isSupported: false,
     isStarred: false,
     starsCount: 15300,
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
   },
   {
     id: '4',
@@ -72,6 +77,7 @@ const mockLiveStreams: LiveStream[] = [
     isSupported: false,
     isStarred: false,
     starsCount: 5700,
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4'
   },
 ];
 
@@ -251,81 +257,20 @@ export default function LiveScreen() {
       {/* Dot Animation Only - NO STAR VISIBLE */}
       <DotAnimation isActive={activeAnimations[stream.id] || false} />
       
-      <View style={styles.liveVideo}>
-        {/* Video Placeholder */}
-        <View style={styles.videoPlaceholder}>
-          <View style={styles.videoGradient} />
-        </View>
-
-        {/* Channel Info + Support */}
-        <View style={[styles.channelInfo, { bottom: insets.bottom + 90 }]}>
-          <View style={styles.creatorInfoRow}>
-            <View style={styles.creatorAvatar}>
-              <View style={styles.avatarPlaceholder} />
-            </View>
-
-            {/* Name + Support button */}
-            <View style={styles.creatorNameContainer}>
-              <Text style={styles.creatorName}>{stream.creator}</Text>
-
-              <TouchableOpacity
-                style={[
-                  styles.supportButton,
-                  stream.isSupported ? styles.supportedButton : styles.supportButtonActive,
-                ]}
-                onPress={() => toggleSupport(stream.id)}
-              >
-                <Text
-                  style={[
-                    styles.supportButtonText,
-                    stream.isSupported ? styles.supportedButtonText : styles.supportButtonTextActive,
-                  ]}
-                >
-                  {stream.isSupported ? 'Supported' : 'Support'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-
-        {/* Comment input */}
-        <View style={[styles.commentBar, { bottom: insets.bottom + 40 }]}>
-          <View style={styles.commentSection}>
-            <TextInput
-              style={styles.commentInputText}
-              placeholder="Add a comment..."
-              placeholderTextColor="rgba(255,255,255,0.6)"
-              value={message}
-              onChangeText={setMessage}
-            />
-            <TouchableOpacity style={styles.sendButton}>
-              <Ionicons name="send" size={16} color="#6A5ACD" />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Actions */}
-        <View style={[styles.actions, { bottom: insets.bottom + 90 }]}>
-          {/* Star Button */}
-          <TouchableOpacity style={styles.actionButton} onPress={() => toggleStar(stream.id)}>
-            <View style={styles.actionIconContainer}>
-              <Ionicons 
-                name={stream.isStarred ? "star" : "star-outline"} 
-                size={24} 
-                color={stream.isStarred ? "#6A5ACD" : "white"}
-              />
-            </View>
-            <Text style={styles.actionText}>{formatNumber(stream.starsCount)}</Text>
-          </TouchableOpacity>
-
-          {/* Share Button */}
-          <TouchableOpacity style={styles.actionButton} onPress={() => handleShare(stream.title)}>
-            <View style={styles.actionIconContainer}>
-              <Ionicons name="share-social" size={24} color="white" />
-            </View>
-          </TouchableOpacity>
-        </View>
-      </View>
+      {/* Live Player Component */}
+      <LivePlayer
+        videoUrl={stream.videoUrl}
+        streamTitle={stream.title}
+        creatorName={stream.creator}
+        creatorId={stream.creatorId}
+        viewers={stream.viewers}
+        isActive={currentIndex === streams.indexOf(stream)}
+        onStarPress={() => toggleStar(stream.id)}
+        onSharePress={() => handleShare(stream.title)}
+        onCommentPress={() => console.log('Comment pressed for:', stream.id)}
+        isStarred={stream.isStarred}
+        starsCount={stream.starsCount}
+      />
     </View>
   );
 
@@ -455,150 +400,5 @@ const styles = StyleSheet.create({
   },
   liveContainer: {
     position: 'relative',
-  },
-  // Dot Animation Styles (NO STAR)
-  dotAnimationContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 1000,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  tinyRedDot: {
-    position: 'absolute',
-    backgroundColor: '#6A5ACD',
-    top: '50%',
-    left: '50%',
-    zIndex: 1000,
-  },
-  liveVideo: {
-    flex: 1,
-    backgroundColor: '#000000',
-  },
-  videoPlaceholder: {
-    flex: 1,
-    backgroundColor: '#000000',
-  },
-  videoGradient: {
-    flex: 1,
-    backgroundColor: '#000000',
-  },
-  channelInfo: {
-    position: 'absolute',
-    left: 16,
-    right: 16,
-    zIndex: 10,
-    gap: 8,
-  },
-  creatorInfoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  creatorAvatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#333333',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: '#6A5ACD',
-  },
-  avatarPlaceholder: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#444444',
-  },
-  creatorNameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    flexShrink: 1,
-    flexWrap: 'wrap',
-  },
-  creatorName: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  supportButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 14,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#6A5ACD',
-  },
-  supportButtonActive: {
-    backgroundColor: '#6A5ACD',
-    borderColor: '#6A5ACD',
-  },
-  supportedButton: {
-    backgroundColor: 'rgba(106, 90, 205, 0.15)',
-  },
-  supportButtonText: {
-    fontSize: 11,
-    fontWeight: '600',
-  },
-  supportButtonTextActive: {
-    color: '#FFFFFF',
-  },
-  supportedButtonText: {
-    color: '#6A5ACD',
-  },
-  commentBar: {
-    position: 'absolute',
-    left: 16,
-    right: 16,
-    zIndex: 10,
-  },
-  commentSection: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    borderRadius: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    height: 36,
-  },
-  commentInputText: {
-    flex: 1,
-    color: '#FFFFFF',
-    fontSize: 12,
-    padding: 0,
-    margin: 0,
-  },
-  sendButton: {
-    padding: 2,
-  },
-  actions: {
-    position: 'absolute',
-    right: 12,
-    gap: 12,
-    zIndex: 10,
-  },
-  actionButton: {
-    alignItems: 'center',
-    gap: 4,
-  },
-  actionIconContainer: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  actionText: {
-    color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: '500',
   },
 });
