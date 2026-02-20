@@ -401,4 +401,22 @@ const styles = StyleSheet.create({
   liveContainer: {
     position: 'relative',
   },
+  // Dot Animation Styles
+  dotAnimationContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1000,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  tinyRedDot: {
+    position: 'absolute',
+    backgroundColor: '#6A5ACD',
+    top: '50%',
+    left: '50%',
+    zIndex: 1000,
+  },
 });
