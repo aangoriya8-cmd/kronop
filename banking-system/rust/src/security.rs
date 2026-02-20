@@ -2,6 +2,8 @@ use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation,
 use chrono::{Duration, Utc};
 use bcrypt::{hash, verify, DEFAULT_COST};
 use crate::models::{Claims, User};
+use sha2::{Sha256, Digest};
+use rand::{thread_rng, Rng};
 
 pub struct SecurityService;
 
@@ -58,6 +60,59 @@ impl SecurityService {
         use rand::{thread_rng, Rng};
         let mut rng = thread_rng();
         format!("ACC{:016}", rng.gen_range(0..1_000_000_000_000_000_000))
+    }
+
+    /// Generate Secret Mixed ID by mixing User ID and Bank Account Number in 2-2 digit pattern
+    /// Then encrypt with SHA-256 for secure database storage
+    pub fn generate_secret_mixed_id(user_id: &str, account_number: &str) -> String {
+        // Extract digits from user_id and account_number
+        let user_digits: String = user_id.chars().filter(|c| c.is_ascii_digit()).collect();
+        let account_digits: String = account_number.chars().filter(|c| c.is_ascii_digit()).collect();
+        
+        // Pad with zeros if needed to ensure even length
+        let user_padded = format!("{:0width$}", user_digits, width = if user_digits.len() % 2 != 0 { user_digits.len() + 1 } else { user_digits.len() });
+        let account_padded = format!("{:0width$}", account_digits, width = if account_digits.len() % 2 != 0 { account_digits.len() + 1 } else { account_digits.len() });
+        
+        // Mix in 2-2 digit pattern: 2 from user, 2 from account, repeat
+        let mut mixed_id = String::new();
+        let user_chunks = user_padded.chars().collect::<Vec<_>>();
+        let account_chunks = account_padded.chars().collect::<Vec<_>>();
+        
+        let max_len = user_chunks.len().max(account_chunks.len());
+        
+        for i in (0..max_len).step_by(2) {
+            // Add 2 digits from user_id
+            if i < user_chunks.len() {
+                mixed_id.push(user_chunks[i]);
+                if i + 1 < user_chunks.len() {
+                    mixed_id.push(user_chunks[i + 1]);
+                }
+            }
+            
+            // Add 2 digits from account_number
+            if i < account_chunks.len() {
+                mixed_id.push(account_chunks[i]);
+                if i + 1 < account_chunks.len() {
+                    mixed_id.push(account_chunks[i + 1]);
+                }
+            }
+        }
+        
+        // Add random salt for additional security
+        let mut rng = thread_rng();
+        let salt: String = (0..8)
+            .map(|_| rng.gen_range(0..10).to_string())
+            .collect();
+        
+        let final_id = format!("{}{}", mixed_id, salt);
+        
+        // Encrypt with SHA-256
+        let mut hasher = Sha256::new();
+        hasher.update(final_id.as_bytes());
+        let result = hasher.finalize();
+        
+        // Convert to hex string for database storage
+        format!("{:x}", result)
     }
 
     /// Validate email format
@@ -226,5 +281,23 @@ mod tests {
     fn test_password_strength() {
         assert!(SecurityService::validate_password_strength("StrongPass123!").is_ok());
         assert!(SecurityService::validate_password_strength("weak").is_err());
+    }
+
+    #[test]
+    fn test_secret_mixed_id() {
+        let user_id = "USER123456";
+        let account_number = "ACC9876543210987";
+        let secret_id = SecurityService::generate_secret_mixed_id(user_id, account_number);
+        
+        // Should return a 64-character hex string (SHA-256)
+        assert_eq!(secret_id.len(), 64);
+        
+        // Should be different for different inputs
+        let secret_id2 = SecurityService::generate_secret_mixed_id("USER654321", account_number);
+        assert_ne!(secret_id, secret_id2);
+        
+        // Should be different for same inputs (due to random salt)
+        let secret_id3 = SecurityService::generate_secret_mixed_id(user_id, account_number);
+        assert_ne!(secret_id, secret_id3);
     }
 }

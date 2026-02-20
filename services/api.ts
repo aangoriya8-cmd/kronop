@@ -1,4 +1,4 @@
-import axios from 'axios';
+// Using React Native's built-in fetch instead of axios for React Native compatibility
 import { API_KEYS, BUNNY_CONFIG, getBunnyConfigByType, BunnyConfigType } from '../constants/Config';
 import { reelsService } from './reelsService';
 import { videosService } from './videosService';
@@ -15,20 +15,70 @@ const base = getBaseUrl();
 const cleanBase = base.replace(/\/+$/, ''); 
 export const API_URL = cleanBase.endsWith('/api') ? cleanBase : `${cleanBase}/api`;
 
-const API_CLIENT = axios.create({
-  baseURL: API_URL,
-  timeout: 5000,
-  headers: { 'Content-Type': 'application/json' }
-});
+// Create a simple fetch-based API client to replace axios
+const createApiClient = () => {
+  const request = async (url: string, options: RequestInit = {}) => {
+    const fullUrl = `${API_URL}${url}`;
+    
+    const defaultHeaders = {
+      'Content-Type': 'application/json',
+    };
+    
+    const config: RequestInit = {
+      headers: defaultHeaders,
+      ...options,
+      headers: {
+        ...defaultHeaders,
+        ...options.headers,
+      },
+    };
+    
+    // Handle body serialization
+    if (config.body && typeof config.body === 'object' && !(config.body instanceof FormData)) {
+      config.body = JSON.stringify(config.body);
+    }
+    
+    // Remove Content-Type for FormData
+    if (config.body instanceof FormData) {
+      const { 'Content-Type': _, ...headersWithoutContentType } = config.headers as Record<string, string>;
+      config.headers = headersWithoutContentType;
+    }
+    
+    const response = await fetch(fullUrl, config);
+    
+    if (!response.ok) {
+      let errorDetails = '';
+      try {
+        const errorText = await response.text();
+        errorDetails = errorText;
+      } catch (e) {
+        // Could not read error response
+      }
+      
+      throw new Error(`API Error: ${response.status} ${response.statusText} - ${errorDetails}`);
+    }
+    
+    return response.json();
+  };
+  
+  return {
+    get: (url: string, options?: RequestInit) => request(url, { ...options, method: 'GET' }),
+    post: (url: string, data?: any, options?: RequestInit) => request(url, { ...options, method: 'POST', body: data }),
+    put: (url: string, data?: any, options?: RequestInit) => request(url, { ...options, method: 'PUT', body: data }),
+    delete: (url: string, options?: RequestInit) => request(url, { ...options, method: 'DELETE' }),
+  };
+};
+
+const API_CLIENT = createApiClient();
 
 export const fetchUnifiedData = async (endpoint: string) => {
   try {
     const response = await API_CLIENT.get(endpoint);
-    // Return .data if it exists (standard response format)
-    if (response.data && response.data.data) {
-      return response.data.data;
+    // Return response directly since our fetch client doesn't wrap in .data
+    if (response && response.data) {
+      return response.data;
     }
-    return response.data;
+    return response;
   } catch (error) {
     console.error('Unified Fetch Error:', error instanceof Error ? error.message : String(error));
     throw error;
