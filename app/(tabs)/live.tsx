@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import { Camera, CameraType, FlashMode, useCameraPermissions } from 'expo-camera';
 import * as Video from 'expo-video';
-import LivePlayer from '../Player/live';
+import Liveall from '../Liveall.tsx';
 
 interface LiveStream {
   id: string;
@@ -80,6 +80,22 @@ const mockLiveStreams: LiveStream[] = [
     videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4'
   },
 ];
+
+// Convert to Liveall format
+const liveallStreams = mockLiveStreams.map(stream => ({
+  id: stream.id,
+  videoUrl: stream.videoUrl,
+  title: stream.title,
+  creatorName: stream.creator,
+  viewers: stream.viewers,
+  views: parseInt(stream.viewers.replace('K', '000')) || 1000,
+  likes: stream.starsCount,
+  music: 'Original Audio',
+  user: {
+    username: stream.creatorId
+  },
+  isLive: stream.isLive
+}));
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -177,19 +193,12 @@ export default function LiveScreen() {
       {/* Dot Animation Only - NO STAR VISIBLE */}
       <DotAnimation isActive={activeAnimations[stream.id] || false} />
       
-      {/* Live Player Component */}
-      <LivePlayer
-        videoUrl={stream.videoUrl}
-        streamTitle={stream.title}
-        creatorName={stream.creator}
-        creatorId={stream.creatorId}
-        viewers={stream.viewers}
-        isActive={currentIndex === streams.indexOf(stream)}
-        onStarPress={() => toggleStar(stream.id)}
-        onSharePress={() => handleShare(stream.title)}
-        onCommentPress={() => console.log('Comment pressed for:', stream.id)}
-        isStarred={stream.isStarred}
-        starsCount={stream.starsCount}
+      {/* Liveall Component */}
+      <Liveall
+        streams={liveallStreams}
+        initialIndex={currentIndex}
+        onIndexChange={setCurrentIndex}
+        onVideoEnd={() => console.log('Video ended')}
       />
     </View>
   );
