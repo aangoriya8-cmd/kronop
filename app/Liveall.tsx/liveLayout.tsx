@@ -8,7 +8,7 @@ import Livestar from './Livestar';
 import Livecomment from './livecomment';
 import Sayarshare from './sayarshare';
 import Livetaital from './Livetaital';
-import Livechannelinfo from './livechannelinfo';
+import SupportButton from './SupportButton';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -21,9 +21,11 @@ interface LiveLayoutProps {
   isActive: boolean;
   isStarred: boolean;
   starsCount: number;
+  isSupported: boolean;
   onStarPress: () => void;
   onSharePress: () => void;
   onCommentPress: () => void;
+  onSupportPress: () => void;
 }
 
 function LiveLayout({
@@ -35,9 +37,11 @@ function LiveLayout({
   isActive,
   isStarred,
   starsCount,
+  isSupported,
   onStarPress,
   onSharePress,
-  onCommentPress
+  onCommentPress,
+  onSupportPress
 }: LiveLayoutProps) {
   const [isVideoReady, setIsVideoReady] = React.useState(false);
   
@@ -113,7 +117,10 @@ function LiveLayout({
 
         {/* Right Side - Traffic */}
         <View style={styles.rightSideInfo}>
-          <Text style={styles.trafficText}>Traffic</Text>
+          <View style={styles.trafficRow}>
+            <Text style={styles.trafficText}>Traffic</Text>
+            <Text style={styles.userCount}>{viewers}</Text>
+          </View>
         </View>
 
         {/* Right Side Components */}
@@ -129,9 +136,13 @@ function LiveLayout({
           <Sayarshare onPress={onSharePress} />
         </View>
 
-        {/* Bottom Left - Channel Info */}
+        {/* Bottom Left - Support Button */}
         <View style={styles.bottomLeftControls}>
-          <Livechannelinfo creatorName={creatorName} />
+          <SupportButton 
+            creatorName={creatorName}
+            isSupported={isSupported}
+            onPress={onSupportPress}
+          />
         </View>
 
               </View>
@@ -199,7 +210,7 @@ const styles = StyleSheet.create({
   },
   rightSideInfo: {
     position: 'absolute',
-    top: 60,
+    top: 16,
     right: 16,
     alignItems: 'flex-end',
     zIndex: 20,
@@ -214,10 +225,22 @@ const styles = StyleSheet.create({
     textShadowRadius: 2,
   },
   trafficText: {
-    color: '#CCCCCC',
+    color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '500',
-    marginBottom: 4,
+    marginRight: 10,
+  },
+  trafficRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  userCount: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '600',
+    textShadowColor: 'rgba(0, 0, 0, 0.8)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   viewerCount: {
     color: '#FFFFFF',

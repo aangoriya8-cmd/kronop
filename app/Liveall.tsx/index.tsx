@@ -16,6 +16,7 @@ const mockStream = {
 export default function App() {
   const [isStarred, setIsStarred] = React.useState(false);
   const [starsCount, setStarsCount] = React.useState(0);
+  const [isSupported, setIsSupported] = React.useState(false);
 
   const handleStarPress = () => {
     setIsStarred(prev => !prev);
@@ -30,6 +31,10 @@ export default function App() {
     console.log('Comment pressed');
   };
 
+  const handleSupportPress = () => {
+    setIsSupported(prev => !prev);
+  };
+
   return (
     <LivePlayer 
       videoUrl={mockStream.videoUrl}
@@ -40,9 +45,11 @@ export default function App() {
       isActive={true}
       isStarred={isStarred}
       starsCount={starsCount}
+      isSupported={isSupported}
       onStarPress={handleStarPress}
       onSharePress={handleSharePress}
       onCommentPress={handleCommentPress}
+      onSupportPress={handleSupportPress}
     />
   );
 }
