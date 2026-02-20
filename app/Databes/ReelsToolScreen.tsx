@@ -55,7 +55,7 @@ export default function ReelsToolScreen() {
     try {
       setLoading(true);
       const response = await reelsApi.getReels();
-      const data = Array.isArray(response) ? response : response.data || [];
+      const data = Array.isArray(response) ? response : (response as any)?.data || [];
       
       const processedReels = data.map((item: any, index: number) => ({
         id: item.id || `reel_${index}`,
@@ -104,7 +104,7 @@ export default function ReelsToolScreen() {
           <Text style={styles.statText}>{item.comments}</Text>
         </View>
         <View style={styles.statItem}>
-          <MaterialIcons name="share" size={14} color="#2196F3" />
+          <MaterialIcons name="share" size={14} color="#8B00FF" />
           <Text style={styles.statText}>{item.shares}</Text>
         </View>
         <View style={styles.statItem}>
@@ -119,7 +119,7 @@ export default function ReelsToolScreen() {
     return (
       <SafeScreen>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#2196F3" />
+          <ActivityIndicator size="large" color="#8B00FF" />
           <Text style={styles.loadingText}>Loading reels...</Text>
         </View>
       </SafeScreen>
@@ -169,7 +169,7 @@ export default function ReelsToolScreen() {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContainer}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#2196F3']} />
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#8B00FF']} />
           }
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
@@ -226,12 +226,12 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#2196F3',
+    borderColor: '#8B00FF',
   },
   summaryTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2196F3',
+    color: '#8B00FF',
     marginBottom: 12,
   },
   summaryGrid: {

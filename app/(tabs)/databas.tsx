@@ -14,6 +14,7 @@ import {
 import { SafeScreen } from '../../components/layout/SafeScreen';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { theme } from '../../constants/theme';
+import { AppColors } from '../../appColor/AppColors';
 import { useRouter } from 'expo-router';
 import WalletConnect from '../../frontend/WalletConnect';
 
@@ -170,7 +171,7 @@ export default function UserDataScreen() {
     return (
       <SafeScreen>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#2196F3" />
+          <ActivityIndicator size="large" color={AppColors.loading} />
           <Text style={styles.loadingText}>Loading...</Text>
         </View>
       </SafeScreen>
@@ -183,20 +184,20 @@ export default function UserDataScreen() {
         style={styles.container}
         showsVerticalScrollIndicator={false}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#2196F3']} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[AppColors.refresh]} />
         }
       >
 
         {/* Your Rank Card */}
         <View style={styles.rankCard}>
           <View style={styles.cardHeader}>
-            <MaterialIcons name="stars" size={24} color="#2196F3" />
+            <MaterialIcons name="stars" size={24} color={AppColors.primary.main} />
             <Text style={styles.cardTitle}>Your Rank</Text>
           </View>
 
           <View style={styles.rankContainer}>
             <View style={styles.rankBadge}>
-              <Ionicons name="trophy" size={32} color="#FFD700" />
+              <Ionicons name="trophy" size={32} color={AppColors.gold} />
               <Text style={styles.rankText}>{getRank()}</Text>
             </View>
 
@@ -215,15 +216,15 @@ export default function UserDataScreen() {
 
         {/* Your Earning Button */}
         <TouchableOpacity style={styles.earningButton} onPress={handleYourEarning}>
-          <MaterialIcons name="account-balance-wallet" size={22} color="#2196F3" />
+          <MaterialIcons name="account-balance-wallet" size={22} color={AppColors.primary.main} />
           <Text style={styles.earningButtonText}>Your Earning</Text>
-          <MaterialIcons name="arrow-forward" size={18} color="#2196F3" />
+          <MaterialIcons name="arrow-forward" size={18} color={AppColors.primary.main} />
         </TouchableOpacity>
 
         {/* Database Sections - Clickable Cards */}
         <View style={styles.databaseContainer}>
           <View style={styles.databaseHeader}>
-            <MaterialIcons name="storage" size={20} color="#2196F3" />
+            <MaterialIcons name="storage" size={20} color={AppColors.primary.main} />
             <Text style={styles.databaseTitle}>Database</Text>
           </View>
 
@@ -232,11 +233,10 @@ export default function UserDataScreen() {
               key={index}
               style={styles.databaseCard}
               onPress={() => handleSectionPress(section)}
-              activeOpacity={0.7}
             >
               <View style={styles.databaseRow}>
                 <View style={styles.databaseLeft}>
-                  <MaterialIcons name={section.icon as any} size={22} color="#2196F3" />
+                  <MaterialIcons name={section.icon as any} size={22} color={AppColors.primary.main} />
                   <View style={styles.databaseInfo}>
                     <Text style={styles.databaseName}>{section.name}</Text>
                     <Text style={styles.databaseCount}>{section.stats.total} items</Text>
@@ -245,10 +245,10 @@ export default function UserDataScreen() {
 
                 <View style={styles.databaseStats}>
                   <View style={styles.statBadge}>
-                    <Ionicons name="star" size={12} color="#FFD700" />
+                    <Ionicons name="star" size={12} color={AppColors.gold} />
                     <Text style={styles.statBadgeText}>{section.stats.stars}</Text>
                   </View>
-                  <MaterialIcons name="chevron-right" size={24} color="#666" />
+                  <MaterialIcons name="chevron-right" size={24} color={AppColors.icon.inactive} />
                 </View>
               </View>
             </TouchableOpacity>
@@ -257,16 +257,16 @@ export default function UserDataScreen() {
 
         {/* Wallet Connection Button */}
         <TouchableOpacity style={styles.walletButton} onPress={handleWalletConnection}>
-          <MaterialIcons name="account-balance-wallet" size={22} color="#2196F3" />
+          <MaterialIcons name="account-balance-wallet" size={22} color={AppColors.primary.main} />
           <Text style={styles.walletButtonText}>Wallet Connection</Text>
-          <MaterialIcons name="arrow-forward" size={18} color="#2196F3" />
+          <MaterialIcons name="arrow-forward" size={18} color={AppColors.primary.main} />
         </TouchableOpacity>
 
         {/* Add Bank Account Button */}
         <TouchableOpacity style={styles.bankButton} onPress={handleAddBankAccount}>
-          <MaterialIcons name="account-balance" size={22} color="#2196F3" />
+          <MaterialIcons name="account-balance" size={22} color={AppColors.primary.main} />
           <Text style={styles.bankButtonText}>Add Bank Account</Text>
-          <MaterialIcons name="arrow-forward" size={18} color="#2196F3" />
+          <MaterialIcons name="arrow-forward" size={18} color={AppColors.primary.main} />
         </TouchableOpacity>
       </ScrollView>
 
@@ -280,7 +280,7 @@ export default function UserDataScreen() {
         <View style={styles.modalContainer}>
           <View style={styles.modalHeader}>
             <TouchableOpacity onPress={() => setShowWalletModal(false)}>
-              <MaterialIcons name="close" size={24} color="#2196F3" />
+              <MaterialIcons name="close" size={24} color={AppColors.primary.main} />
             </TouchableOpacity>
             <Text style={styles.modalTitle}>Wallet Connection</Text>
             <View style={styles.placeholder} />
@@ -295,27 +295,27 @@ export default function UserDataScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: AppColors.background.primary,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000000',
+    backgroundColor: AppColors.background.primary,
   },
   loadingText: {
     marginTop: 12,
     fontSize: 14,
-    color: '#666',
+    color: AppColors.text.tertiary,
   },
   rankCard: {
-    backgroundColor: '#0A0A0A',
+    backgroundColor: AppColors.background.secondary,
     margin: 12,
     marginBottom: 8,
     padding: 16,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#2196F3',
+    borderColor: AppColors.primary.main,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -323,12 +323,12 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingBottom: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#1A1A1A',
+    borderBottomColor: AppColors.border.secondary,
   },
   cardTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#2196F3',
+    color: AppColors.primary.main,
     marginLeft: 8,
   },
   rankContainer: {
@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
   rankText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#FFD700',
+    color: AppColors.gold,
     marginTop: 4,
   },
   rankStats: {
@@ -355,28 +355,28 @@ const styles = StyleSheet.create({
   },
   rankStatLabel: {
     fontSize: 14,
-    color: '#666',
+    color: AppColors.text.tertiary,
   },
   rankStatValue: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#fff',
+    color: AppColors.text.primary,
   },
   earningButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#0A0A0A',
+    backgroundColor: AppColors.background.secondary,
     marginHorizontal: 12,
     marginBottom: 12,
     paddingVertical: 14,
     paddingHorizontal: 16,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#2196F3',
+    borderColor: AppColors.primary.main,
   },
   earningButtonText: {
-    color: '#2196F3',
+    color: AppColors.primary.main,
     fontSize: 15,
     fontWeight: '500',
     flex: 1,
@@ -394,14 +394,14 @@ const styles = StyleSheet.create({
   databaseTitle: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#2196F3',
+    color: AppColors.primary.main,
     marginLeft: 6,
   },
   databaseCard: {
-    backgroundColor: '#0A0A0A',
+    backgroundColor: AppColors.background.secondary,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#1A1A1A',
+    borderColor: AppColors.border.primary,
     marginBottom: 8,
   },
   databaseRow: {
@@ -421,12 +421,12 @@ const styles = StyleSheet.create({
   databaseName: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#fff',
+    color: AppColors.text.primary,
     marginBottom: 2,
   },
   databaseCount: {
     fontSize: 12,
-    color: '#666',
+    color: AppColors.text.tertiary,
   },
   databaseStats: {
     flexDirection: 'row',
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
   statBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1A1A1A',
+    backgroundColor: AppColors.background.elevated,
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 12,
@@ -443,14 +443,14 @@ const styles = StyleSheet.create({
   },
   statBadgeText: {
     fontSize: 12,
-    color: '#fff',
+    color: AppColors.text.primary,
     marginLeft: 4,
   },
   bankButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#0A0A0A',
+    backgroundColor: AppColors.background.secondary,
     margin: 12,
     marginTop: 0,
     marginBottom: 20,
@@ -458,10 +458,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#2196F3',
+    borderColor: AppColors.primary.main,
   },
   bankButtonText: {
-    color: '#2196F3',
+    color: AppColors.primary.main,
     fontSize: 15,
     fontWeight: '500',
     flex: 1,
@@ -471,17 +471,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#0A0A0A',
+    backgroundColor: AppColors.background.secondary,
     marginHorizontal: 12,
     marginBottom: 12,
     paddingVertical: 14,
     paddingHorizontal: 16,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#2196F3',
+    borderColor: AppColors.primary.main,
   },
   walletButtonText: {
-    color: '#2196F3',
+    color: AppColors.primary.main,
     fontSize: 15,
     fontWeight: '500',
     flex: 1,
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: AppColors.background.primary,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -497,12 +497,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#1A1A1A',
+    borderBottomColor: AppColors.border.secondary,
   },
   modalTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#fff',
+    color: AppColors.text.primary,
   },
   placeholder: {
     width: 24,

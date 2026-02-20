@@ -769,7 +769,7 @@ export default function AddBankAccountScreen() {
       </View>
 
       <View style={styles.kycNote}>
-        <MaterialIcons name="info" size={20} color="#2196F3" />
+        <MaterialIcons name="info" size={20} color="#8B00FF" />
         <Text style={styles.kycNoteText}>
           Your documents are secure and encrypted. We use them only for verification purposes as per RBI guidelines.
         </Text>
@@ -911,7 +911,7 @@ export default function AddBankAccountScreen() {
 
       <View style={styles.consentContainer}>
         <TouchableOpacity style={styles.checkbox}>
-          <MaterialIcons name="check-box" size={24} color="#2196F3" />
+          <MaterialIcons name="check-box" size={24} color="#8B00FF" />
         </TouchableOpacity>
         <Text style={styles.consentText}>
           I confirm that all information provided is true and correct. I agree to the Terms & Conditions.
@@ -1025,8 +1025,8 @@ const styles = StyleSheet.create({
     borderColor: '#333',
   },
   activeStep: {
-    backgroundColor: '#2196F3',
-    borderColor: '#2196F3',
+    backgroundColor: '#8B00FF',
+    borderColor: '#8B00FF',
   },
   stepText: {
     fontSize: 13,
@@ -1043,7 +1043,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
   },
   activeStepLine: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#8B00FF',
   },
   progressContainer: {
     paddingHorizontal: 16,
@@ -1060,7 +1060,7 @@ const styles = StyleSheet.create({
   progressTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2196F3',
+    color: '#8B00FF',
   },
   content: {
     flex: 1,
@@ -1074,7 +1074,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#2196F3',
+    color: '#8B00FF',
     marginBottom: 4,
   },
   sectionSubtitle: {
@@ -1174,13 +1174,13 @@ const styles = StyleSheet.create({
     marginRight: 6,
   },
   selectedRadio: {
-    borderColor: '#2196F3',
+    borderColor: '#8B00FF',
   },
   selectedRadioInner: {
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#2196F3',
+    backgroundColor: '#8B00FF',
   },
   radioLabel: {
     fontSize: 14,
@@ -1202,8 +1202,8 @@ const styles = StyleSheet.create({
     borderColor: '#333',
   },
   selectedPicker: {
-    backgroundColor: '#2196F3',
-    borderColor: '#2196F3',
+    backgroundColor: '#8B00FF',
+    borderColor: '#8B00FF',
   },
   pickerText: {
     fontSize: 13,
@@ -1221,7 +1221,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#2196F3',
+    borderColor: '#8B00FF',
   },
   kycNoteText: {
     flex: 1,
@@ -1257,7 +1257,7 @@ const styles = StyleSheet.create({
   summaryTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#2196F3',
+    color: '#8B00FF',
     marginBottom: 12,
   },
   summarySection: {
@@ -1303,7 +1303,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#1A1A1A',
   },
   nextButton: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#8B00FF',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

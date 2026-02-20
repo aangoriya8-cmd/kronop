@@ -61,8 +61,8 @@ export default function VideoToolScreen() {
   const loadVideos = async () => {
     try {
       setLoading(true);
-      const response: VideoApiResponse = await videosApi.getVideos();
-      const data = response.data || [];
+      const response: any = await videosApi.getVideos();
+      const data = Array.isArray(response) ? response : response?.data || [];
 
       // Process videos
       const processedVideos = data.map((item: VideoItem, index: number) => ({
@@ -99,7 +99,7 @@ export default function VideoToolScreen() {
   const renderVideoItem = ({ item }: { item: VideoItem }) => (
     <TouchableOpacity style={styles.videoCard}>
       <View style={styles.videoHeader}>
-        <MaterialIcons name="videocam" size={20} color="#2196F3" />
+        <MaterialIcons name="videocam" size={20} color="#8B00FF" />
         <Text style={styles.videoTitle}>{item.title}</Text>
       </View>
       
@@ -113,7 +113,7 @@ export default function VideoToolScreen() {
           <Text style={styles.statText}>{item.comments}</Text>
         </View>
         <View style={styles.statItem}>
-          <MaterialIcons name="share" size={14} color="#2196F3" />
+          <MaterialIcons name="share" size={14} color="#8B00FF" />
           <Text style={styles.statText}>{item.shares}</Text>
         </View>
         <View style={styles.statItem}>
@@ -128,7 +128,7 @@ export default function VideoToolScreen() {
     return (
       <SafeScreen>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#2196F3" />
+          <ActivityIndicator size="large" color="#8B00FF" />
           <Text style={styles.loadingText}>Loading videos...</Text>
         </View>
       </SafeScreen>
@@ -181,7 +181,7 @@ export default function VideoToolScreen() {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContainer}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#2196F3']} />
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#8B00FF']} />
           }
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
@@ -238,12 +238,12 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#2196F3',
+    borderColor: '#8B00FF',
   },
   summaryTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2196F3',
+    color: '#8B00FF',
     marginBottom: 12,
   },
   summaryGrid: {

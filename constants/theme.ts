@@ -1,34 +1,8 @@
 import { Platform } from 'react-native';
+import { AppColors } from '../appColor/AppColors';
 
 export const theme = {
-  colors: {
-    primary: {
-      main: '#8B00FF', // Purple/Violet
-      light: '#A833FF',
-      dark: '#6B00CC',
-    },
-    background: {
-      primary: '#000000', // Deep Black
-      secondary: '#0A0A0A',
-      tertiary: '#141414',
-      elevated: '#1A1A1A',
-    },
-    text: {
-      primary: '#FFFFFF', // White text remains white
-      secondary: '#CCCCCC',
-      tertiary: '#999999',
-      inverse: '#000000',
-    },
-    border: {
-      primary: '#333333',
-      secondary: '#444444',
-      light: '#2A2A2A',
-    },
-    success: '#8B00FF', // Purple/Violet
-    error: '#A833FF',
-    warning: '#FFAA00',
-    overlay: 'rgba(0, 0, 0, 0.8)',
-  },
+  colors: AppColors,
   spacing: {
     xs: 4,
     sm: 8,
@@ -76,29 +50,7 @@ export const theme = {
     lg: { top: 16, bottom: 16, left: 16, right: 16 },
   },
   elevation: {
-    sm: Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 2,
-      },
-      default: {},
-    }),
-    md: Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 4,
-      },
-      default: {},
-    }),
+    sm: {},
+    md: {},
   },
 } as const;

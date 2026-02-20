@@ -116,7 +116,7 @@ export default function SongToolScreen() {
           <Text style={styles.statText}>{item.comments}</Text>
         </View>
         <View style={styles.statItem}>
-          <MaterialIcons name="share" size={14} color="#2196F3" />
+          <MaterialIcons name="share" size={14} color="#8B00FF" />
           <Text style={styles.statText}>{item.shares}</Text>
         </View>
         <View style={styles.statItem}>
@@ -131,7 +131,7 @@ export default function SongToolScreen() {
     return (
       <SafeScreen>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#2196F3" />
+          <ActivityIndicator size="large" color="#8B00FF" />
           <Text style={styles.loadingText}>Loading songs...</Text>
         </View>
       </SafeScreen>
@@ -181,7 +181,7 @@ export default function SongToolScreen() {
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContainer}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#2196F3']} />
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#8B00FF']} />
           }
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
@@ -238,12 +238,12 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#2196F3',
+    borderColor: '#8B00FF',
   },
   summaryTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2196F3',
+    color: '#8B00FF',
     marginBottom: 12,
   },
   summaryGrid: {

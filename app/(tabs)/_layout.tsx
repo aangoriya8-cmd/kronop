@@ -1,8 +1,9 @@
+import React from 'react';
 import { Tabs } from 'expo-router';
 import { Platform, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../constants/theme';
-import { Home, Sparkles, Youtube, User } from 'lucide-react-native';
+import { Home, Sparkles, Play, User, Layers } from 'lucide-react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function TabLayout() {
@@ -19,21 +20,30 @@ export default function TabLayout() {
           animation: 'none',
           sceneStyle: { backgroundColor: '#000000' },
           tabBarStyle: {
-            backgroundColor: theme.colors.background.primary,
-            borderTopColor: theme.colors.border.primary,
-            borderTopWidth: 1,
-            height: Platform.select({
-              ios: insets.bottom + 50,
-              android: insets.bottom + 50,
-              default: 56,
-            }),
-            paddingTop: 6,
-            paddingBottom: Platform.select({
-              ios: insets.bottom + 6,
-              android: insets.bottom + 6,
-              default: 6,
-            }),
-            paddingHorizontal: 8,
+            backgroundColor: '#000000',
+            borderTopColor: 'transparent',
+            borderTopWidth: 0,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+            borderBottomLeftRadius: 24,
+            borderBottomRightRadius: 24,
+            marginHorizontal: 5,
+            marginBottom: 5,
+            height: 55,
+            paddingTop: 0,
+            paddingBottom: 0,
+            paddingHorizontal: 0,
+            position: 'absolute',
+            bottom: 0,
+            width: '97.5%',
+            alignSelf: 'center',
+            elevation: 12,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: -3 },
+            shadowOpacity: 0.4,
+            shadowRadius: 10,
+            justifyContent: 'space-around',
+            alignItems: 'center',
           },
         }}
       >
@@ -55,7 +65,7 @@ export default function TabLayout() {
           name="video"
           options={{
             title: 'Video',
-            tabBarIcon: ({ color }) => <Youtube size={24} color={color} strokeWidth={1.5} />,
+            tabBarIcon: ({ color }) => <Play size={24} color={color} strokeWidth={2} />,
           }}
         />
         {/* --- 1. LIVE SECTION --- */}
@@ -71,7 +81,7 @@ export default function TabLayout() {
           name="databas"
           options={{
             title: 'Database',
-            tabBarIcon: ({ color }) => <Ionicons name="server-outline" size={24} color={color} />,
+            tabBarIcon: ({ color }) => <Layers size={24} color={color} strokeWidth={2} />,
           }}
         />
         {/* --- 3. PROFILE SECTION --- */}
@@ -80,13 +90,6 @@ export default function TabLayout() {
           options={{
             title: 'Profile',
             tabBarIcon: ({ color }) => <User size={24} color={color} strokeWidth={2} />,
-          }}
-        />
-        <Tabs.Screen
-          name="settings"
-          options={{
-            title: 'Settings',
-            tabBarIcon: ({ color }) => <Ionicons name="settings-outline" size={24} color={color} />,
           }}
         />
       </Tabs>
