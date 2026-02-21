@@ -9,7 +9,7 @@ import {
   FlatList,
 } from 'react-native';
 import { SafeScreen } from '../../components/layout/SafeScreen';
-import { MaterialIcons, Ionicons, AntDesign } from '@expo/vector-icons';
+import { MaterialIcons, Ionicons, AntDesign, FontAwesome6 } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
 // Shayari Photos API (for songs)
@@ -108,7 +108,7 @@ export default function SongToolScreen() {
       
       <View style={styles.songStats}>
         <View style={styles.statItem}>
-          <AntDesign name="crown" size={14} color="#FFD700" />
+          <FontAwesome6 name="gem" size={14} color="#FFD700" />
           <Text style={styles.statText}>{item.stars}</Text>
         </View>
         <View style={styles.statItem}>

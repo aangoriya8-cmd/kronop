@@ -10,7 +10,7 @@ import {
   FlatList,
 } from 'react-native';
 import { SafeScreen } from '../../components/layout/SafeScreen';
-import { MaterialIcons, Ionicons, AntDesign } from '@expo/vector-icons';
+import { MaterialIcons, Ionicons, AntDesign, FontAwesome6 } from '@expo/vector-icons';
 import { theme } from '../../constants/theme';
 import { videosApi } from '../../services/api';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -105,7 +105,7 @@ export default function VideoToolScreen() {
       
       <View style={styles.videoStats}>
         <View style={styles.statItem}>
-          <AntDesign name="crown" size={14} color="#FFD700" />
+          <FontAwesome6 name="gem" size={14} color="#FFD700" />
           <Text style={styles.statText}>{item.stars}</Text>
         </View>
         <View style={styles.statItem}>
