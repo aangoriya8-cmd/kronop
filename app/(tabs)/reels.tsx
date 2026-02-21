@@ -12,7 +12,7 @@ import {
   RefreshControl
 } from 'react-native';
 import { useVideoPlayer, VideoView } from 'expo-video';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 import RunningTitle from '../../components/feature/RunningTitle';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
@@ -29,13 +29,17 @@ import ChannelInfo from '../../components/feature/ChannelInfo';
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Simple Button Component - No Background (Fixed: Original icons, medium size)
-const ActionButton = ({ icon, count, onPress, color = '#FFFFFF', isReport = false }: any) => (
+const ActionButton = ({ icon, count, onPress, color = '#FFFFFF', isReport = false, iconType = 'MaterialIcons' }: any) => (
   <TouchableOpacity 
     style={{ alignItems: 'center' }} 
     onPress={onPress}
     activeOpacity={0.7}
   >
-    <MaterialIcons name={icon} size={26} color={color} />
+    {iconType === 'AntDesign' ? (
+      <AntDesign name={icon} size={24} color={color} />
+    ) : (
+      <MaterialIcons name={icon} size={26} color={color} />
+    )}
     {isReport ? (
       <Text style={{ color: '#FFFFFF', fontSize: 9, fontWeight: '600', marginTop: 3 }}>
         Report
@@ -244,21 +248,22 @@ function ReelItem({
       {/* Right Side Buttons - No Background, Save Removed */}
       <View style={styles.rightButtons}>
         <ActionButton 
-          icon={starred[item.id] ? 'star' : 'star-border'} 
+          icon="weibo"
           count={likes[item.id] || item.likes_count || 0}
           onPress={() => {
-            const currentCount = likes[item.id] || 0;
-            const nextLiked = !starred[item.id];
-            const nextCount = nextLiked ? currentCount + 1 : Math.max(0, currentCount - 1);
-            onLikeChange?.(item.id, nextLiked, nextCount);
+            const current = likes[item.id] || item.likes_count || 0;
+            const newCount = starred[item.id] ? current - 1 : current + 1;
+            onLikeChange(item.id, !starred[item.id], newCount);
           }}
           color={starred[item.id] ? '#8B00FF' : '#FFFFFF'}
+          iconType="AntDesign"
         />
         
         <ActionButton 
-          icon="chat-bubble-outline"
+          icon="wechat-work"
           count={(comments[item.id] || []).length}
           onPress={() => onCommentPress?.(item.id)}
+          iconType="AntDesign"
         />
         
         <ActionButton 

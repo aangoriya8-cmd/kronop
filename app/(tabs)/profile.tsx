@@ -181,11 +181,11 @@ export default function ProfileScreen() {
           <TouchableOpacity style={styles.iconButton}>
             <FontAwesome6 name="headset" size={20} color="#FFFFFF" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton} onPress={handleSettingsPress}>
-            <Ionicons name="settings" size={20} color="#FFFFFF" />
-          </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={handleVerificationPress}>
             <FontAwesome6 name="chess-queen" size={20} color="#FFFFFF" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton} onPress={handleSettingsPress}>
+            <Ionicons name="settings" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
       </View>

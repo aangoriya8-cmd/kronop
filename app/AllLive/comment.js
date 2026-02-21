@@ -11,7 +11,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, AntDesign } from '@expo/vector-icons';
 
 const MOCK_COMMENTS = [
   {
@@ -62,7 +62,7 @@ export default function Comment({ streamId }) {
         style={styles.container}
         onPress={() => setModalVisible(true)}
       >
-        <Ionicons name="chatbubble-outline" size={20} color="#FFFFFF" />
+        <AntDesign name="wechat-work" size={20} color="#FFFFFF" />
         <Text style={styles.count}>{comments.length}</Text>
       </TouchableOpacity>
 

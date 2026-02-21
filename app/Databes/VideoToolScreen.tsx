@@ -10,7 +10,7 @@ import {
   FlatList,
 } from 'react-native';
 import { SafeScreen } from '../../components/layout/SafeScreen';
-import { MaterialIcons, Ionicons } from '@expo/vector-icons';
+import { MaterialIcons, Ionicons, AntDesign } from '@expo/vector-icons';
 import { theme } from '../../constants/theme';
 import { videosApi } from '../../services/api';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -105,11 +105,11 @@ export default function VideoToolScreen() {
       
       <View style={styles.videoStats}>
         <View style={styles.statItem}>
-          <Ionicons name="star" size={14} color="#FFD700" />
+          <AntDesign name="weibo" size={14} color="#FFD700" />
           <Text style={styles.statText}>{item.stars}</Text>
         </View>
         <View style={styles.statItem}>
-          <MaterialIcons name="comment" size={14} color="#4CAF50" />
+          <AntDesign name="wechat-work" size={14} color="#4CAF50" />
           <Text style={styles.statText}>{item.comments}</Text>
         </View>
         <View style={styles.statItem}>

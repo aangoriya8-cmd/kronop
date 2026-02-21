@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, AntDesign } from '@expo/vector-icons';
 
 export default function Star({ stars, isStarred, onPress }) {
   const [scale] = useState(new Animated.Value(1));
@@ -31,8 +31,8 @@ export default function Star({ stars, isStarred, onPress }) {
   return (
     <TouchableOpacity onPress={handlePress} style={styles.container}>
       <Animated.View style={{ transform: [{ scale }] }}>
-        <Ionicons 
-          name={isStarred ? 'star' : 'star-outline'} 
+        <AntDesign 
+          name="weibo" 
           size={24} 
           color={isStarred ? '#FFD700' : '#FFFFFF'} 
         />

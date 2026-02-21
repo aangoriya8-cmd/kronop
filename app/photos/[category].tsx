@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, FlatList, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { SafeScreen } from '../../components/layout';
 import { theme } from '../../constants/theme';
 import { Photo } from '../../types/photo';
@@ -50,11 +50,11 @@ export default function CategoryDetailScreen() {
         </View>
         <View style={styles.photoActions}>
           <TouchableOpacity style={styles.actionButton}>
-            <MaterialIcons name="favorite" size={24} color="#fff" />
+            <AntDesign name="weibo" size={24} color="#fff" />
             <Text style={styles.actionText}>{item.likes.toLocaleString()}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton}>
-            <MaterialIcons name="comment" size={24} color="#fff" />
+            <AntDesign name="wechat-work" size={24} color="#fff" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton}>
             <MaterialIcons name="share" size={24} color="#fff" />
