@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated } from 'react-native';
-import { Ionicons, AntDesign, FontAwesome6 } from '@expo/vector-icons';
+import { Ionicons, AntDesign, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function Star({ stars, isStarred, onPress }) {
   const [scale] = useState(new Animated.Value(1));
@@ -31,8 +31,8 @@ export default function Star({ stars, isStarred, onPress }) {
   return (
     <TouchableOpacity onPress={handlePress} style={styles.container}>
       <Animated.View style={{ transform: [{ scale }] }}>
-        <FontAwesome6 
-          name="gem" 
+        <MaterialCommunityIcons 
+          name="diamond-outline" 
           size={24} 
           color={isStarred ? '#FFD700' : '#FFFFFF'} 
         />

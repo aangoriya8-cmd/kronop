@@ -9,7 +9,7 @@ import {
   FlatList,
 } from 'react-native';
 import { SafeScreen } from '../../components/layout/SafeScreen';
-import { MaterialIcons, Ionicons, AntDesign, FontAwesome6 } from '@expo/vector-icons';
+import { MaterialIcons, Ionicons, AntDesign, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import { storiesApi } from '../../services/api';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 
@@ -96,11 +96,11 @@ export default function StoryToolScreen() {
       
       <View style={styles.storyStats}>
         <View style={styles.statItem}>
-          <FontAwesome6 name="gem" size={14} color="#FFD700" />
+          <MaterialCommunityIcons name="diamond-outline" size={14} color="#FFD700" />
           <Text style={styles.statText}>{item.stars}</Text>
         </View>
         <View style={styles.statItem}>
-          <AntDesign name="wechat-work" size={14} color="#4CAF50" />
+          <MaterialCommunityIcons name="message-outline" size={14} color="#4CAF50" />
           <Text style={styles.statText}>{item.comments}</Text>
         </View>
         <View style={styles.statItem}>
