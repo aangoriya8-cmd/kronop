@@ -13,19 +13,25 @@ import {
 } from 'react-native';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { MaterialIcons, AntDesign, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
-import RunningTitle from '../../components/feature/RunningTitle';
-import CustomDiamondIcon from '../../components/icons/CustomDiamondIcon';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../constants/theme';
 import { useSWRContent } from '../../hooks/swr';
-// import { hlsOptimizerService } from '../../services/hlsOptimizer'; // Service removed
-import { CommentSheet } from '../../components/feature/CommentSheet';
-import StatusBarOverlay from '../../components/common/StatusBarOverlay';
-import SupportSection from '../../components/feature/SupportSection';
-import ChannelInfo from '../../components/feature/ChannelInfo';
+// import { CommentSheet } from '../../components/feature/CommentSheet';
+// import StatusBarOverlay from '../../components/common/StatusBarOverlay';
+// import SupportSection from '../../components/feature/SupportSection';
+// import ChannelInfo from '../../components/feature/ChannelInfo';
+
+// Import AllReels Premium Components
+import DiamondLike from '../../AllReels/DiamondLike';
+import WechatComment from '../../AllReels/WechatComment';
+import PremiumShare from '../../AllReels/PremiumShare';
+import LuxurySave from '../../AllReels/LuxurySave';
+import SupportVIP from '../../AllReels/SupportVIP';
+import ChannelPro from '../../AllReels/ChannelPro';
+import RunningTitle from '../../AllReels/RunningTitle';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -89,7 +95,7 @@ interface Comment {
   timestamp: string;
 }
 
-// Simple Reel Item
+// Premium Reel Item with AllReels Components
 function ReelItem({ 
   item, 
   isActive,
@@ -113,13 +119,27 @@ function ReelItem({
   const playerRef = useRef<any>(null);
   const isPlayerReadyRef = useRef(false);
 
+  // Premium haptic feedback
+  const triggerHaptic = (type: 'like' | 'comment' | 'share' | 'save' | 'support') => {
+    if (typeof window !== 'undefined' && window.navigator) {
+      const vibrationMap = {
+        like: 10,
+        comment: 8,
+        share: 12,
+        save: 15,
+        support: 20
+      };
+      window.navigator.vibrate?.(vibrationMap[type]);
+    }
+  };
+
   useEffect(() => {
     if (isActive) setIsPaused(false);
   }, [isActive]);
 
   const getVideoSource = () => {
     let videoUrl = item.video_url;
-    console.log('🎬 Video URL:', videoUrl);
+    console.log('🚀 Premium Video URL:', videoUrl);
     
     // If the main URL doesn't work, try a backup
     if (!videoUrl || videoUrl.includes('mixkit.co')) {
@@ -189,8 +209,37 @@ function ReelItem({
 
     if (lastTap.current && (now - lastTap.current) < DOUBLE_PRESS_DELAY) {
       setIsPaused(prev => !prev);
+      triggerHaptic('like'); // Premium haptic feedback
     }
     lastTap.current = now;
+  };
+
+  // Premium double tap for seek (TikTok + YouTube style)
+  const handleVideoDoubleTap = (evt: any) => {
+    const now = Date.now();
+    if (lastTap.current && (now - lastTap.current) < DOUBLE_PRESS_DELAY) {
+      // Seek forward 10 seconds
+      if (playerRef.current) {
+        playerRef.current.seekForward(10);
+        triggerHaptic('share'); // Premium haptic for seek
+      }
+      lastTap.current = now;
+    }
+  };
+
+  // Premium playback speed control
+  const [playbackSpeed, setPlaybackSpeed] = useState(1);
+  const togglePlaybackSpeed = () => {
+    const speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
+    const currentIndex = speeds.indexOf(playbackSpeed);
+    const nextIndex = (currentIndex + 1) % speeds.length;
+    const newSpeed = speeds[nextIndex];
+    
+    setPlaybackSpeed(newSpeed);
+    if (playerRef.current) {
+      playerRef.current.setRate(newSpeed);
+      triggerHaptic('comment'); // Premium haptic for speed change
+    }
   };
 
   const channelName = item.user_profiles?.username || 'Unknown User';
@@ -212,6 +261,11 @@ function ReelItem({
           contentFit="cover"
           nativeControls={false}
           allowsPictureInPicture={false}
+          onDoubleTap={handleVideoDoubleTap} // Premium TikTok double tap
+          onPlaybackRateUpdate={(rate) => {
+            setPlaybackSpeed(rate);
+            console.log('🚀 Premium playback speed:', rate);
+          }}
         />
         
         {isPaused && (
@@ -252,34 +306,35 @@ function ReelItem({
         </View>
       </View>
 
-      {/* Right Side Buttons - No Background, Save Removed */}
+      {/* Right Side Buttons - Premium AllReels Components */}
       <View style={styles.rightButtons}>
-        <ActionButton 
-          icon="diamond"
-          count={likes[item.id] || item.likes_count || 0}
-          onPress={() => {
+        <DiamondLike 
+          initialLikes={item.likes_count || 0}
+          onLikeChange={(liked, count) => {
             const current = likes[item.id] || item.likes_count || 0;
-            const newCount = starred[item.id] ? current - 1 : current + 1;
+            const newCount = liked ? current + 1 : current - 1;
             onLikeChange(item.id, !starred[item.id], newCount);
           }}
+          size={24}
           color={starred[item.id] ? '#8B00FF' : '#FFFFFF'}
-          iconType="CustomDiamond"
         />
         
-        <ActionButton 
-          icon="wechat-work"
-          count={(comments[item.id] || []).length}
-          onPress={() => onCommentPress?.(item.id)}
-          iconType="AntDesign"
-        />
-        
-        <ActionButton 
-          icon="send"
-          count={shares[item.id] || 0}
-          onPress={() => {
-            const current = shares[item.id] || 0;
-            onShareChange?.(item.id, current + 1);
+        <WechatComment 
+          initialComments={comments[item.id] || []}
+          onCommentChange={(newComments) => {
+            comments[item.id] = newComments;
           }}
+          size={24}
+          color="#FFFFFF"
+        />
+        
+        <PremiumShare 
+          initialShares={shares[item.id] || 0}
+          onShareChange={(count) => {
+            shares[item.id] = count;
+          }}
+          size={24}
+          color="#FFFFFF"
         />
         
         <ActionButton 
