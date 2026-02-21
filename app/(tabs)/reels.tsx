@@ -14,6 +14,7 @@ import {
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { MaterialIcons, AntDesign, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import RunningTitle from '../../components/feature/RunningTitle';
+import CustomDiamondIcon from '../../components/icons/CustomDiamondIcon';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -41,6 +42,8 @@ const ActionButton = ({ icon, count, onPress, color = '#FFFFFF', isReport = fals
       <FontAwesome6 name={icon} size={24} color={color} />
     ) : iconType === 'MaterialCommunityIcons' ? (
       <MaterialCommunityIcons name={icon} size={24} color={color} />
+    ) : iconType === 'CustomDiamond' ? (
+      <CustomDiamondIcon size={24} color={color} />
     ) : (
       <MaterialIcons name={icon} size={26} color={color} />
     )}
@@ -252,7 +255,7 @@ function ReelItem({
       {/* Right Side Buttons - No Background, Save Removed */}
       <View style={styles.rightButtons}>
         <ActionButton 
-          icon="diamond-outline"
+          icon="diamond"
           count={likes[item.id] || item.likes_count || 0}
           onPress={() => {
             const current = likes[item.id] || item.likes_count || 0;
@@ -260,14 +263,14 @@ function ReelItem({
             onLikeChange(item.id, !starred[item.id], newCount);
           }}
           color={starred[item.id] ? '#8B00FF' : '#FFFFFF'}
-          iconType="MaterialCommunityIcons"
+          iconType="CustomDiamond"
         />
         
         <ActionButton 
-          icon="message-outline"
+          icon="wechat-work"
           count={(comments[item.id] || []).length}
           onPress={() => onCommentPress?.(item.id)}
-          iconType="MaterialCommunityIcons"
+          iconType="AntDesign"
         />
         
         <ActionButton 

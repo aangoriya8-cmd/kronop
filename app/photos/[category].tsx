@@ -7,6 +7,7 @@ import { SafeScreen } from '../../components/layout';
 import { theme } from '../../constants/theme';
 import { Photo } from '../../types/photo';
 import { getPhotosByCategory, getRelatedPhotos, photoCategories } from '../../services/photoService';
+import CustomDiamondIcon from '../../components/icons/CustomDiamondIcon';
 
 const { width, height } = Dimensions.get('window');
 
@@ -50,11 +51,11 @@ export default function CategoryDetailScreen() {
         </View>
         <View style={styles.photoActions}>
           <TouchableOpacity style={styles.actionButton}>
-            <MaterialCommunityIcons name="diamond-outline" size={24} color="#fff" />
+            <CustomDiamondIcon size={24} color="#fff" />
             <Text style={styles.actionText}>{item.likes.toLocaleString()}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton}>
-            <MaterialCommunityIcons name="message-outline" size={24} color="#fff" />
+            <AntDesign name="wechat-work" size={24} color="#fff" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton}>
             <MaterialIcons name="share" size={24} color="#fff" />

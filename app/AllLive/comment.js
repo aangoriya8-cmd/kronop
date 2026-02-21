@@ -62,7 +62,7 @@ export default function Comment({ streamId }) {
         style={styles.container}
         onPress={() => setModalVisible(true)}
       >
-        <MaterialCommunityIcons name="message-outline" size={20} color="#FFFFFF" />
+        <AntDesign name="wechat-work" size={20} color="#FFFFFF" />
         <Text style={styles.count}>{comments.length}</Text>
       </TouchableOpacity>
 
