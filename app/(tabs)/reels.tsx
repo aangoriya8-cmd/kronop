@@ -31,6 +31,8 @@ import RunningTitle from '../../AllReels/RunningTitle';
 
 // Import existing components
 import StatusBarOverlay from '../../components/common/StatusBarOverlay';
+import CommentSheet from '../../components/feature/CommentSheet';
+import ChannelInfo from '../../components/feature/ChannelInfo';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -94,6 +96,35 @@ interface Comment {
   timestamp: string;
 }
 
+interface Reel {
+  id: string;
+  title: string;
+  description: string;
+  video_url: string;
+  thumbnail_url: string | null;
+  duration: number;
+  views_count: number;
+  likes_count: number;
+  tags: string[];
+  is_public: boolean;
+  created_at: string;
+  user_profiles?: {
+    username: string;
+    avatar_url: string;
+  };
+  song_name?: string;
+  song_artist?: string;
+}
+
+interface Comment {
+  id: string;
+  userId: string;
+  userName: string;
+  userAvatar: string;
+  text: string;
+  timestamp: string;
+}
+
 // Premium Reel Item with AllReels Components
 function ReelItem({ 
   item, 
@@ -112,21 +143,21 @@ function ReelItem({
   saved,
   supported
 }: {
-    item: any;
+    item: Reel;
     isActive: boolean;
-    onChannelPress?: any;
-    onLikeChange?: any;
-    onCommentPress?: any;
-    onShareChange?: any;
-    onSaveChange?: any;
-    onSupportChange?: any;
-    onReportPress?: any;
-    likes?: any;
-    comments?: any;
-    shares?: any;
-    starred?: any;
-    saved?: any;
-    supported?: any;
+    onChannelPress?: (reel: Reel) => void;
+    onLikeChange?: (itemId: string, isLiked: boolean, count: number) => void;
+    onCommentPress?: (itemId: string, comments: Comment[]) => void;
+    onShareChange?: (itemId: string, count: number) => void;
+    onSaveChange?: (itemId: string, isSaved: boolean) => void;
+    onSupportChange?: (itemId: string, isSupported: boolean) => void;
+    onReportPress?: (itemId: string) => void;
+    likes?: Record<string, number>;
+    comments?: Record<string, Comment[]>;
+    shares?: Record<string, number>;
+    starred?: Record<string, boolean>;
+    saved?: Record<string, boolean>;
+    supported?: Record<string, boolean>;
   }) {
   const [isPaused, setIsPaused] = useState(false);
   const [isVideoReady, setIsVideoReady] = useState(false);
