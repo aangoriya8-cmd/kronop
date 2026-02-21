@@ -4,21 +4,21 @@ import { ReelProvider } from './core/ReelContext';
 import PerformanceMonitor from './core/PerformanceMonitor';
 
 // Ultra-fast lazy loading with prefetch
-const DiamondLike = lazy(() => import('./components/DiamondLike/DiamondLike'));
-const WechatComment = lazy(() => import('./components/WechatComment/WechatComment'));
-const PremiumShare = lazy(() => import('./components/PremiumShare/PremiumShare'));
-const LuxurySave = lazy(() => import('./components/LuxurySave/LuxurySave'));
-const SupportVIP = lazy(() => import('./components/SupportVIP/SupportVIP'));
-const ChannelPro = lazy(() => import('./components/ChannelPro/ChannelPro'));
-const RunningTitle = lazy(() => import('./components/RunningTitle/RunningTitle'));
+const Star = lazy(() => import('./components/Star'));
+const WechatComment = lazy(() => import('./components/comment'));
+const ShareComponent = lazy(() => import('./components/share'));
+const Save = lazy(() => import('./components/save'));
+const Support = lazy(() => import('./components/support'));
+const UserInfo = lazy(() => import('./components/UserInfo'));
+const RunningTitle = lazy(() => import('./components/runningtitle'));
 
 export {
-  DiamondLike,
+  Star,
   WechatComment,
-  PremiumShare,
-  LuxurySave,
-  SupportVIP,
-  ChannelPro,
+  ShareComponent,
+  Save,
+  Support,
+  UserInfo,
   RunningTitle,
   ReelProvider,
   PerformanceMonitor

@@ -1,10 +1,13 @@
+// Load environment variables
+require('dotenv').config();
+
 export default {
   // BunnyCDN Edge Configuration
   edge: {
-    primary: 'https://kronop.b-cdn.net',
+    primary: `https://${process.env.EXPO_PUBLIC_REELS_PULL_ZONE || 'kronop.b-cdn.net'}`,
     fallback: 'https://kronop.fallback.b-cdn.net',
     zone: 'kronop-reels',
-    pullZone: 123456,
+    pullZone: parseInt(process.env.EXPO_PUBLIC_REELS_LIBRARY_ID) || 123456,
   },
   
   // Streaming Optimization
@@ -15,6 +18,8 @@ export default {
     maxBitrate: 8000, // 8Mbps
     adaptiveBitrate: true,
     segmentSize: 2, // 2 seconds
+    apiKey: process.env.EXPO_PUBLIC_REELS_API_KEY,
+    libraryId: process.env.EXPO_PUBLIC_REELS_LIBRARY_ID,
   },
   
   // Cache Strategy

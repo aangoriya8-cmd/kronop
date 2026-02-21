@@ -1,8 +1,9 @@
 import React, { useState, useRef } from 'react';
 
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, FlatList, Share, Alert, Animated } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, FlatList, Share, Alert, Animated, ScrollView } from 'react-native';
 
-import { Video } from 'expo-av';
+import { Video, ResizeMode } from 'expo-av';
+import { useCameraPermissions } from 'expo-camera';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -157,34 +158,88 @@ const mockLiveStreams: LiveStream[] = [
 
 
 // Convert to Liveall format
-
 const liveallStreams = mockLiveStreams.map(stream => ({
-
   id: stream.id,
-
   videoUrl: stream.videoUrl,
-
   title: stream.title,
-
   creatorName: stream.creator,
-
   viewers: stream.viewers,
-
   views: parseInt(stream.viewers.replace('K', '000')) || 1000,
-
   likes: stream.starsCount,
-
   music: 'Original Audio',
-
   user: {
-
     username: stream.creatorId
-
   },
-
   isLive: stream.isLive
-
 }));
+
+// Liveall stream interface
+interface LiveallStream {
+  id: string;
+  videoUrl: string;
+  title: string;
+  creatorName: string;
+  viewers: string;
+  views: number;
+  likes: number;
+  music: string;
+  user: {
+    username: string;
+  };
+  isLive: boolean;
+}
+
+// Liveall Component Props interface
+interface LiveallProps {
+  streams: LiveallStream[];
+  initialIndex: number;
+  onIndexChange: (index: number) => void;
+  onVideoEnd: () => void;
+}
+
+// Liveall Component Definition
+function Liveall({ streams, initialIndex, onIndexChange, onVideoEnd }: LiveallProps) {
+  const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
+  const [currentIndex, setCurrentIndex] = useState(initialIndex || 0);
+
+  const handleScroll = (event: any) => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+    const index = Math.round(offsetY / SCREEN_HEIGHT);
+    setCurrentIndex(index);
+    onIndexChange(index);
+  };
+
+  const renderItem = ({ item }: { item: LiveallStream }) => (
+    <View style={{ height: SCREEN_HEIGHT }}>
+      <Video
+        source={{ uri: item.videoUrl }}
+        style={{ flex: 1 }}
+        shouldPlay={currentIndex === streams.indexOf(item)}
+        isLooping
+        resizeMode={ResizeMode.COVER}
+        onPlaybackStatusUpdate={(status: any) => {
+          if (status && status.didJustFinish) {
+            onVideoEnd();
+          }
+        }}
+      />
+    </View>
+  );
+
+  return (
+    <FlatList
+      data={streams}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.id}
+      pagingEnabled
+      showsVerticalScrollIndicator={false}
+      snapToInterval={SCREEN_HEIGHT}
+      decelerationRate="fast"
+      onMomentumScrollEnd={handleScroll}
+      style={{ flex: 1 }}
+    />
+  );
+}
 
 
 
