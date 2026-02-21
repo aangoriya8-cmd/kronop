@@ -3,7 +3,7 @@ import { Tabs } from 'expo-router';
 import { Platform, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../constants/theme';
-import { Home, Sparkles, Play, User, Layers } from 'lucide-react-native';
+import { Home, Sparkles, Play, Layers } from 'lucide-react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function TabLayout() {
@@ -89,7 +89,7 @@ export default function TabLayout() {
           name="profile"
           options={{
             title: 'Profile',
-            tabBarIcon: ({ color }) => <User size={24} color={color} strokeWidth={2} />,
+            tabBarIcon: ({ color }) => <Ionicons name="person-outline" size={24} color={color} />,
           }}
         />
       </Tabs>

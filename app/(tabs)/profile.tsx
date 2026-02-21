@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
   StatusBar
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, FontAwesome6 } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import profileService from '../../services/profileService.js';
@@ -179,13 +179,13 @@ export default function ProfileScreen() {
         </View>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.iconButton}>
-            <Ionicons name="leaf" size={20} color="#FFFFFF" />
+            <FontAwesome6 name="headset" size={20} color="#FFFFFF" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={handleSettingsPress}>
             <Ionicons name="settings" size={20} color="#FFFFFF" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton} onPress={handleVerificationPress}>
-            <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" />
+            <FontAwesome6 name="chess-queen" size={20} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
       </View>
