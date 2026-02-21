@@ -22,21 +22,21 @@ const CustomDiamondIcon: React.FC<CustomDiamondIconProps> = ({
         <Path
           d="M12 2L3 7L12 22L21 7L12 2Z"
           stroke={color}
-          strokeWidth="1.5"
+          strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
         <Path
           d="M12 2L7 7L12 22L17 7L12 2Z"
           stroke={color}
-          strokeWidth="1.5"
+          strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
         <Path
           d="M3 7H21L12 22L3 7Z"
           stroke={color}
-          strokeWidth="1.5"
+          strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
