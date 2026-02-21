@@ -6,14 +6,7 @@ import CustomDiamondIcon from '../components/icons/CustomDiamondIcon';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-interface DiamondLikeProps {
-  initialLikes?: number;
-  onLikeChange?: (liked: boolean, count: number) => void;
-  size?: number;
-  color?: string;
-}
-
-const DiamondLike: React.FC<DiamondLikeProps> = ({
+const DiamondLike = ({
   initialLikes = 0,
   onLikeChange,
   size = 24,
@@ -51,7 +44,7 @@ const DiamondLike: React.FC<DiamondLikeProps> = ({
     onLikeChange?.(newLikedState, newLikesCount);
   };
 
-  const formatNumber = (num: number): string => {
+  const formatNumber = (num) => {
     if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
     if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
     return num.toString();

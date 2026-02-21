@@ -6,20 +6,7 @@ import { AntDesign } from '@expo/vector-icons';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-interface WechatCommentProps {
-  initialComments?: Array<{
-    id: string;
-    username: string;
-    userAvatar: string;
-    text: string;
-    time: string;
-  }>;
-  onCommentChange?: (comments: any[]) => void;
-  size?: number;
-  color?: string;
-}
-
-const WechatComment: React.FC<WechatCommentProps> = ({
+const WechatComment = ({
   initialComments = [],
   onCommentChange,
   size = 24,

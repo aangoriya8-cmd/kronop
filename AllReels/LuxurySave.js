@@ -6,14 +6,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-interface LuxurySaveProps {
-  initialSaved?: boolean;
-  onSaveChange?: (saved: boolean) => void;
-  size?: number;
-  color?: string;
-}
-
-const LuxurySave: React.FC<LuxurySaveProps> = ({
+const LuxurySave = ({
   initialSaved = false,
   onSaveChange,
   size = 24,

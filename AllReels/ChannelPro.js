@@ -1,21 +1,12 @@
 // ChannelPro.js - Premium Channel Management Component
 // The Speed King - Professional Channel System
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions, Alert, Linking } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-interface ChannelProProps {
-  channelName?: string;
-  subscribers?: number;
-  isSubscribed?: boolean;
-  onSubscribeChange?: (subscribed: boolean) => void;
-  size?: number;
-  color?: string;
-}
-
-const ChannelPro: React.FC<ChannelProProps> = ({
+const ChannelPro = ({
   channelName = 'Kronop Premium',
   subscribers = 0,
   isSubscribed = false,
@@ -50,7 +41,7 @@ const ChannelPro: React.FC<ChannelProProps> = ({
     onSubscribeChange?.(newSubscribeState);
 
     Alert.alert(
-      newSubscribeState ? 'Channel Subscribed! 🚀' : 'Unsubscribed',
+      newSubscribeState ? 'Channel Subscribed! ' : 'Unsubscribed',
       newSubscribeState 
         ? `You're now a premium subscriber to ${channelName}!` 
         : `You've unsubscribed from ${channelName}`,
@@ -58,7 +49,7 @@ const ChannelPro: React.FC<ChannelProProps> = ({
     );
   };
 
-  const formatNumber = (num: number): string => {
+  const formatNumber = (num) => {
     if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
     if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
     return num.toString();

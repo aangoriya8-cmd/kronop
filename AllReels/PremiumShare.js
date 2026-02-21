@@ -6,14 +6,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-interface PremiumShareProps {
-  initialShares?: number;
-  onShareChange?: (count: number) => void;
-  size?: number;
-  color?: string;
-}
-
-const PremiumShare: React.FC<PremiumShareProps> = ({
+const PremiumShare = ({
   initialShares = 0,
   onShareChange,
   size = 24,
@@ -62,7 +55,7 @@ const PremiumShare: React.FC<PremiumShareProps> = ({
     }
   };
 
-  const formatNumber = (num: number): string => {
+  const formatNumber = (num) => {
     if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
     if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
     return num.toString();

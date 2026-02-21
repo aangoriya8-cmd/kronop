@@ -5,14 +5,7 @@ import { View, Text, StyleSheet, Animated, Dimensions } from 'react-native';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-interface RunningTitleProps {
-  title?: string;
-  speed?: number;
-  color?: string;
-  fontSize?: number;
-}
-
-const RunningTitle: React.FC<RunningTitleProps> = ({
+const RunningTitle = ({
   title = 'Kronop Premium',
   speed = 50,
   color = '#FFFFFF',

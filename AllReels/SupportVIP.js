@@ -6,12 +6,7 @@ import { FontAwesome6 } from '@expo/vector-icons';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-interface SupportVIPProps {
-  size?: number;
-  color?: string;
-}
-
-const SupportVIP: React.FC<SupportVIPProps> = ({
+const SupportVIP = ({
   size = 24,
   color = '#FFFFFF'
 }) => {
