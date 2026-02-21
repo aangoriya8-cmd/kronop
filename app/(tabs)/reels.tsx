@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
   RefreshControl
 } from 'react-native';
-import { useVideoPlayer, VideoView } from 'expo-video';
+import { useVideoPlayer, VideoView, VideoViewProps } from 'expo-video';
 import { MaterialIcons, AntDesign, FontAwesome6, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
@@ -19,10 +19,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '../../constants/theme';
 import { useSWRContent } from '../../hooks/swr';
-// import { CommentSheet } from '../../components/feature/CommentSheet';
-// import StatusBarOverlay from '../../components/common/StatusBarOverlay';
-// import SupportSection from '../../components/feature/SupportSection';
-// import ChannelInfo from '../../components/feature/ChannelInfo';
 
 // Import AllReels Premium Components
 import DiamondLike from '../../AllReels/DiamondLike';
@@ -32,6 +28,9 @@ import LuxurySave from '../../AllReels/LuxurySave';
 import SupportVIP from '../../AllReels/SupportVIP';
 import ChannelPro from '../../AllReels/ChannelPro';
 import RunningTitle from '../../AllReels/RunningTitle';
+
+// Import existing components
+import StatusBarOverlay from '../../components/common/StatusBarOverlay';
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -112,7 +111,23 @@ function ReelItem({
   starred,
   saved,
   supported
-}: any) {
+}: {
+    item: any;
+    isActive: boolean;
+    onChannelPress?: any;
+    onLikeChange?: any;
+    onCommentPress?: any;
+    onShareChange?: any;
+    onSaveChange?: any;
+    onSupportChange?: any;
+    onReportPress?: any;
+    likes?: any;
+    comments?: any;
+    shares?: any;
+    starred?: any;
+    saved?: any;
+    supported?: any;
+  }) {
   const [isPaused, setIsPaused] = useState(false);
   const [isVideoReady, setIsVideoReady] = useState(false);
   const lastTap = useRef(0);
@@ -310,7 +325,7 @@ function ReelItem({
       <View style={styles.rightButtons}>
         <DiamondLike 
           initialLikes={item.likes_count || 0}
-          onLikeChange={(liked, count) => {
+          onLikeChange={(liked: boolean, count: number) => {
             const current = likes[item.id] || item.likes_count || 0;
             const newCount = liked ? current + 1 : current - 1;
             onLikeChange(item.id, !starred[item.id], newCount);
@@ -321,7 +336,7 @@ function ReelItem({
         
         <WechatComment 
           initialComments={comments[item.id] || []}
-          onCommentChange={(newComments) => {
+          onCommentChange={(newComments: any[]) => {
             comments[item.id] = newComments;
           }}
           size={24}
@@ -330,7 +345,7 @@ function ReelItem({
         
         <PremiumShare 
           initialShares={shares[item.id] || 0}
-          onShareChange={(count) => {
+          onShareChange={(count: number) => {
             shares[item.id] = count;
           }}
           size={24}
