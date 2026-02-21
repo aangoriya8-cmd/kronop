@@ -96,7 +96,7 @@ export default function ReelsToolScreen() {
       
       <View style={styles.reelStats}>
         <View style={styles.statItem}>
-          <AntDesign name="rocket" size={14} color="#FFD700" />
+          <AntDesign name="crown" size={14} color="#FFD700" />
           <Text style={styles.statText}>{item.stars}</Text>
         </View>
         <View style={styles.statItem}>
