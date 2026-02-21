@@ -105,7 +105,7 @@ export default function VideoToolScreen() {
       
       <View style={styles.videoStats}>
         <View style={styles.statItem}>
-          <AntDesign name="weibo" size={14} color="#FFD700" />
+          <AntDesign name="rocket" size={14} color="#FFD700" />
           <Text style={styles.statText}>{item.stars}</Text>
         </View>
         <View style={styles.statItem}>

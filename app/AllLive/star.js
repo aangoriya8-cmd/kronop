@@ -32,7 +32,7 @@ export default function Star({ stars, isStarred, onPress }) {
     <TouchableOpacity onPress={handlePress} style={styles.container}>
       <Animated.View style={{ transform: [{ scale }] }}>
         <AntDesign 
-          name="weibo" 
+          name="rocket" 
           size={24} 
           color={isStarred ? '#FFD700' : '#FFFFFF'} 
         />

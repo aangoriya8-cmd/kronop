@@ -50,7 +50,7 @@ export default function CategoryDetailScreen() {
         </View>
         <View style={styles.photoActions}>
           <TouchableOpacity style={styles.actionButton}>
-            <AntDesign name="weibo" size={24} color="#fff" />
+            <AntDesign name="rocket" size={24} color="#fff" />
             <Text style={styles.actionText}>{item.likes.toLocaleString()}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton}>

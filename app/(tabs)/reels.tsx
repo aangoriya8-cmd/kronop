@@ -248,7 +248,7 @@ function ReelItem({
       {/* Right Side Buttons - No Background, Save Removed */}
       <View style={styles.rightButtons}>
         <ActionButton 
-          icon="weibo"
+          icon="rocket"
           count={likes[item.id] || item.likes_count || 0}
           onPress={() => {
             const current = likes[item.id] || item.likes_count || 0;
