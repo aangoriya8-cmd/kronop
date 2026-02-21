@@ -7,12 +7,6 @@ import {
   ActivityIndicator,
   TouchableOpacity
 } from 'react-native';
-import Animated, { useAnimatedRef, useSharedValue ,
-  useAnimatedGestureHandler,
-  useAnimatedStyle,
-  withSpring,
-  runOnJS,
-} from 'react-native-reanimated';
 import { Video, ResizeMode } from 'expo-av';
 import { PanGestureHandler, GestureHandlerRootView } from 'react-native-gesture-handler';
 
@@ -36,8 +30,7 @@ const ReelPlayer = ({
   const [savedVideos, setSavedVideos] = useState(new Set()); // Save button state
   
   const videoRefs = useRef({});
-  const scrollRef = useAnimatedRef();
-  const translateY = useSharedValue(0);
+  const translateY = useRef(0);
   
   // FIX 3: Memory cleanup on unmount
   useEffect(() => {

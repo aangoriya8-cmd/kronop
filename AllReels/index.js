@@ -1,45 +1,43 @@
-// AllReels/index.js - Main Export File for AllReels Components
-// The Speed King - Premium Component Library
+import React, { lazy, Suspense } from 'react';
+import { View } from 'react-native';
+import { ReelProvider } from './core/ReelContext';
+import PerformanceMonitor from './core/PerformanceMonitor';
 
-export { default as DiamondLike } from './DiamondLike';
-export { default as WechatComment } from './WechatComment';
-export { default as PremiumShare } from './PremiumShare';
-export { default as LuxurySave } from './LuxurySave';
-export { default as SupportVIP } from './SupportVIP';
-export { default as ChannelPro } from './ChannelPro';
-export { default as RunningTitle } from './RunningTitle';
+// Ultra-fast lazy loading with prefetch
+const DiamondLike = lazy(() => import('./components/DiamondLike/DiamondLike'));
+const WechatComment = lazy(() => import('./components/WechatComment/WechatComment'));
+const PremiumShare = lazy(() => import('./components/PremiumShare/PremiumShare'));
+const LuxurySave = lazy(() => import('./components/LuxurySave/LuxurySave'));
+const SupportVIP = lazy(() => import('./components/SupportVIP/SupportVIP'));
+const ChannelPro = lazy(() => import('./components/ChannelPro/ChannelPro'));
+const RunningTitle = lazy(() => import('./components/RunningTitle/RunningTitle'));
 
-// Premium Bundle Information
-export const AllReelsInfo = {
-  name: 'AllReels Premium Components',
-  version: '1.0.0',
-  description: 'The Speed King - Ultra Premium Component Library',
-  performance: {
-    targetFPS: 120,
-    renderingEngine: 'Skia',
-    backend: 'Rust + WASM',
-    networkProtocol: 'QUIC (HTTP/3)',
-    cdn: 'BunnyCDN Edge Storage',
-    dataFormat: 'FlatBuffers',
-    responseTime: '0.001ms'
-  },
-  components: [
-    'DiamondLike - Premium Diamond Like Button',
-    'WechatComment - WeChat Work Style Comments',
-    'PremiumShare - Lightning Fast Share System',
-    'LuxurySave - Cloud Storage Save System',
-    'SupportVIP - Elite Customer Support',
-    'ChannelPro - Professional Channel Management',
-    'RunningTitle - Smooth Scrolling Text'
-  ],
-  features: [
-    '120 FPS Performance',
-    'Rust + WASM Backend',
-    'QUIC Protocol Networking',
-    'BunnyCDN Edge Storage',
-    'FlatBuffers Data Processing',
-    'Premium Haptic Feedback',
-    'Smooth Animations',
-    'Instant Response Times'
-  ]
+export {
+  DiamondLike,
+  WechatComment,
+  PremiumShare,
+  LuxurySave,
+  SupportVIP,
+  ChannelPro,
+  RunningTitle,
+  ReelProvider,
+  PerformanceMonitor
+};
+
+export const initReelEngine = async () => {
+  // Initialize WASM bridge instead of direct Zig import
+  const { wasmBridge } = await import('./core/wasm_bridge');
+  await wasmBridge.initialize();
+  
+  // Initialize QUIC protocol
+  const quic = await import('./services/quic/QUICClient');
+  
+  // Initialize BunnyCDN
+  const bunny = await import('./services/bunnycdn/BunnyEdge');
+  
+  return { 
+    engine: wasmBridge, 
+    quic: quic.default, 
+    bunny: bunny.default 
+  };
 };
