@@ -45,6 +45,7 @@ import { ReelProvider } from '../../AllReels/core/ReelContext';
 import { useReelPreload } from '../../AllReels/hooks/useReelPreload';
 import { use120FPS } from '../../AllReels/hooks/use120FPS';
 import AudioController from '../../services/AudioController';
+import { fetchBunnyCDNVideo } from '../../services/bunnyVideoFetch';
 
 const { height, width } = Dimensions.get('window');
 
@@ -65,21 +66,36 @@ const Reels = () => {
         
         if (result.success && result.data) {
           // Transform API data to match our interface
-          const formattedReels = result.data.map((reel, index) => ({
-            id: reel._id || index + 1,
-            videoUrl: reel.url || `https://${process.env.EXPO_PUBLIC_REELS_PULL_ZONE}/${reel.bunny_id}`,
-            title: reel.title || 'Amazing Reel',
-            creator: {
-              name: reel.user_id || 'Anonymous Creator',
-              avatar: 'https://i.pravatar.cc/150?img=' + (index + 1),
-              category: reel.category || 'Entertainment'
-            },
-            stats: {
-              likes: reel.likes || Math.floor(Math.random() * 100000),
-              comments: reel.comments || Math.floor(Math.random() * 5000),
-              shares: reel.shares || Math.floor(Math.random() * 2000),
-              views: reel.views || Math.floor(Math.random() * 500000)
+          const formattedReels = await Promise.all(result.data.map(async (reel: any, index: number) => {
+            let videoUrl = reel.url;
+            
+            // If no direct URL, fetch from BunnyCDN
+            if (!videoUrl && reel.bunny_id) {
+              videoUrl = await fetchBunnyCDNVideo(reel.bunny_id);
+              console.log(`📹 BunnyCDN URL for ${reel.bunny_id}:`, videoUrl);
             }
+            
+            // Fallback to direct CDN URL
+            if (!videoUrl) {
+              videoUrl = `https://${process.env.EXPO_PUBLIC_REELS_PULL_ZONE}/${reel.bunny_id}`;
+            }
+            
+            return {
+              id: reel._id || index + 1,
+              videoUrl: videoUrl || 'https://www.w3schools.com/html/mov_bbb.mp4',
+              title: reel.title || 'Amazing Reel',
+              creator: {
+                name: reel.user_id || 'Anonymous Creator',
+                avatar: 'https://i.pravatar.cc/150?img=' + (index + 1),
+                category: reel.category || 'Entertainment'
+              },
+              stats: {
+                likes: reel.likes || Math.floor(Math.random() * 100000),
+                comments: reel.comments || Math.floor(Math.random() * 5000),
+                shares: reel.shares || Math.floor(Math.random() * 2000),
+                views: reel.views || Math.floor(Math.random() * 500000)
+              }
+            };
           }));
           
           setReels(formattedReels);
